@@ -1,6 +1,8 @@
 python-ibmcclient
 =================
 
+[![Build Status](https://travis-ci.org/IamFive/python-ibmcclient.svg?branch=master)](https://travis-ci.org/IamFive/python-ibmcclient)
+
 python-ibmcclient is a Python library to communicate with HUAWEI `iBMC`
 based systems.
 

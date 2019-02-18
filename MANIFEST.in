@@ -6,6 +6,7 @@ include LICENSE.txt
 
 # Include dep
 include requirements.txt
+include test-requirements.txt
 
 # Include the data files
 recursive-include data *
