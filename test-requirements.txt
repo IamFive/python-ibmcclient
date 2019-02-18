@@ -1,0 +1,5 @@
+mock>=2.0.0 # BSD
+responses>=0.10.5 # Apache-2.0
+check-manifest
+flake8
+pytest

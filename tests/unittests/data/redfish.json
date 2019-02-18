@@ -1,0 +1,53 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#ServiceRoot",
+  "@odata.id": "/redfish/v1/",
+  "@odata.type": "#ServiceRoot.v1_0_2.ServiceRoot",
+  "Id": "RootService",
+  "Name": "Root Service",
+  "RedfishVersion": "1.0.2",
+  "UUID": "877AA970-58F9-8432-E811-80345C184638",
+  "Systems": {
+    "@odata.id": "/redfish/v1/Systems"
+  },
+  "Chassis": {
+    "@odata.id": "/redfish/v1/Chassis"
+  },
+  "Managers": {
+    "@odata.id": "/redfish/v1/Managers"
+  },
+  "Tasks": {
+    "@odata.id": "/redfish/v1/TaskService"
+  },
+  "SessionService": {
+    "@odata.id": "/redfish/v1/SessionService"
+  },
+  "AccountService": {
+    "@odata.id": "/redfish/v1/AccountService"
+  },
+  "EventService": {
+    "@odata.id": "/redfish/v1/EventService"
+  },
+  "UpdateService": {
+    "@odata.id": "/redfish/v1/UpdateService"
+  },
+  "Registries": {
+    "@odata.id": "/redfish/v1/Registries"
+  },
+  "JsonSchemas": {
+    "@odata.id": "/redfish/v1/JSONSchemas"
+  },
+  "Oem": {
+    "Huawei": {
+      "SmsUpdateService": null,
+      "DataAcquisitionService": {
+        "@odata.id": "/redfish/v1/DataAcquisitionService"
+      },
+      "SecurityBanner": "WARNING! This system is PRIVATE and PROPRIETARY and may only be accessed by authorized users. Unauthorized use of the system is prohibited. The owner, or its agents, may monitor any activity or communication on the system. The owner, or its agents, may retrieve any information stored within the system. By accessing and using the system, you are consenting to such monitoring and information retrieval for law enforcement and other purposes.",
+      "ProductName": "2288H V5",
+      "HostName": "server5",
+      "LanguageSet": "en,zh,ja",
+      "Copyright": "Huawei Technologies Co., Ltd. 2004-2018. All rights reserved.",
+      "DomainName": null
+    }
+  }
+}

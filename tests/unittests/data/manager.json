@@ -1,0 +1,164 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Managers/Members/$entity",
+  "@odata.id": "/redfish/v1/Managers/1",
+  "@odata.type": "#Manager.v1_3_0.Manager",
+  "Id": "1",
+  "Name": "Manager",
+  "ManagerType": "BMC",
+  "FirmwareVersion": "3.12",
+  "UUID": "877AA970-58F9-8432-E811-80345C184638",
+  "Model": "iBMC",
+  "DateTime": "2019-02-15T07:09:03+08:00",
+  "DateTimeLocalOffset": "Asia/Shanghai",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "GraphicalConsole": {
+    "ServiceEnabled": true,
+    "ConnectTypesSupported": [
+      "KVMIP"
+    ],
+    "MaxConcurrentSessions": 2
+  },
+  "SerialConsole": {
+    "ServiceEnabled": true,
+    "ConnectTypesSupported": [
+      "IPMI"
+    ],
+    "MaxConcurrentSessions": 1
+  },
+  "NetworkProtocol": {
+    "@odata.id": "/redfish/v1/Managers/1/NetworkProtocol"
+  },
+  "EthernetInterfaces": {
+    "@odata.id": "/redfish/v1/Managers/1/EthernetInterfaces"
+  },
+  "VirtualMedia": {
+    "@odata.id": "/redfish/v1/Managers/1/VirtualMedia"
+  },
+  "Oem": {
+    "Huawei": {
+      "LanguageSet": "en,zh,ja",
+      "HostName": "server5",
+      "DeviceIPv4": "112.93.129.9",
+      "DeviceIPv6": "",
+      "DomainName": "cert.com",
+      "BMCUpTime": "1 days 04h:18m:19s",
+      "ProductUniqueID": "0x01011700",
+      "PlatformType": "0x10",
+      "RemoteOEMInfo": [
+        0
+      ],
+      "DeviceLocation": null,
+      "Stateless": {
+        "SysManagerId": null,
+        "SysManagerIP": null,
+        "SysManagerPort": 26957,
+        "ControlPowerOnEnabled": false,
+        "AutoSearchEnabled": false
+      },
+      "LoginRule": [
+        {
+          "MemberId": "Rule1",
+          "RuleEnabled": false,
+          "StartTime": null,
+          "EndTime": null,
+          "IP": null,
+          "Mac": null
+        },
+        {
+          "MemberId": "Rule2",
+          "RuleEnabled": false,
+          "StartTime": null,
+          "EndTime": null,
+          "IP": null,
+          "Mac": null
+        },
+        {
+          "MemberId": "Rule3",
+          "RuleEnabled": false,
+          "StartTime": null,
+          "EndTime": null,
+          "IP": null,
+          "Mac": null
+        }
+      ],
+      "SecurityService": {
+        "@odata.id": "/redfish/v1/Managers/1/SecurityService"
+      },
+      "SnmpService": {
+        "@odata.id": "/redfish/v1/Managers/1/SnmpService"
+      },
+      "SmtpService": {
+        "@odata.id": "/redfish/v1/Managers/1/SmtpService"
+      },
+      "SyslogService": {
+        "@odata.id": "/redfish/v1/Managers/1/SyslogService"
+      },
+      "KvmService": {
+        "@odata.id": "/redfish/v1/Managers/1/KvmService"
+      },
+      "NtpService": {
+        "@odata.id": "/redfish/v1/Managers/1/NtpService"
+      },
+      "VncService": {
+        "@odata.id": "/redfish/v1/Managers/1/VncService"
+      },
+      "SmsService": null,
+      "SPService": {
+        "@odata.id": "/redfish/v1/Managers/1/SPService"
+      }
+    }
+  },
+  "Actions": {
+    "#Manager.Reset": {
+      "target": "/redfish/v1/Managers/1/Actions/Manager.Reset",
+      "@Redfish.ActionInfo": "/redfish/v1/Managers/1/ResetActionInfo"
+    },
+    "Oem": {
+      "Huawei": {
+        "#Manager.DeleteLanguage": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.DeleteLanguage",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/DeleteLanguageActionInfo"
+        },
+        "#Manager.RestoreFactory": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.RestoreFactory",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/RestoreFactoryActionInfo"
+        },
+        "#Manager.RollBack": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.RollBack",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/RollBackActionInfo"
+        },
+        "#Manager.Dump": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.Dump",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/DumpActionInfo"
+        },
+        "#Manager.ExportConfiguration": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.ExportConfiguration",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/ExportConfigurationActionInfo"
+        },
+        "#Manager.ImportConfiguration": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.ImportConfiguration",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/ImportConfigurationActionInfo"
+        },
+        "#Manager.PowerOnPermit": {
+          "target": "/redfish/v1/Managers/1/Actions/Oem/Huawei/Manager.PowerOnPermit",
+          "@Redfish.ActionInfo": "/redfish/v1/Managers/1/PowerOnPermitActionInfo"
+        }
+      }
+    }
+  },
+  "Links": {
+    "ManagerForServers": [
+      {
+        "@odata.id": "/redfish/v1/Systems/1"
+      }
+    ],
+    "ManagerForChassis": [
+      {
+        "@odata.id": "/redfish/v1/Chassis/1"
+      }
+    ]
+  }
+}
