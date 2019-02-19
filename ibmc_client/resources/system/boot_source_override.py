@@ -12,7 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# Version 1.0.0
+# Version 0.0.2
 from pprint import pformat
 
 from ibmc_client.resources import BaseResource

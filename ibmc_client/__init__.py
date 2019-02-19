@@ -12,14 +12,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Version 1.0.0
+# Version 0.0.2
 
 import logging
 
 from .api.system import IBMCSystemClient
 from .connector import Connector
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 LOG = logging.getLogger(__name__)
 
