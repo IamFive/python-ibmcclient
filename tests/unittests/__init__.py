@@ -75,3 +75,10 @@ class BaseUnittest(unittest.TestCase):
             method='DELETE',
             url=self.address + location
         ))
+
+    @staticmethod
+    def get_request_body(request):
+        body = request.body
+        if isinstance(body, bytes):
+            body = body.decode('utf-8')
+        return body

@@ -41,7 +41,7 @@ class TestConnect(BaseUnittest):
             self.assertEqual(request1.method, 'POST')
             self.assertEqual(request1.headers['Content-Type'],
                              'application/json')
-            self.assertEqual(json.loads(request1.body), {
+            self.assertEqual(json.loads(self.get_request_body(request1)), {
                 'UserName': self.username,
                 'Password': self.password
             })

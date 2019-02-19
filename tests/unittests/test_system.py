@@ -100,7 +100,6 @@ class TestSystem(BaseUnittest):
         with ibmc_client.connect(**self.server) as client:
             system = client.system.get()
             boot_source_override = system.boot_source_override
-            boot_source_override.enabled
             self.assertEqual(boot_source_override.enabled,
                              constants.BOOT_SOURCE_ENABLED_DISABLED)
             self.assertEqual(boot_source_override.target,
@@ -133,7 +132,7 @@ class TestSystem(BaseUnittest):
             self.assertEqual(req.method, 'POST')
             self.assertEqual(req.headers['Content-Type'], 'application/json')
             self.assertEqual(req.headers['X-Auth-Token'], self.token)
-            self.assertEqual(json.loads(req.body), {
+            self.assertEqual(json.loads(self.get_request_body(req)), {
                 'ResetType': constants.RESET_FORCE_RESTART,
             })
 
@@ -171,7 +170,8 @@ class TestSystem(BaseUnittest):
                     constants.BOOT_SOURCE_ENABLED_ONCE,
                 'BootSourceOverrideMode': constants.BOOT_SOURCE_MODE_BIOS
             }
-            self.assertEqual(json.loads(req.body), {'Boot': boot})
+            self.assertEqual(json.loads(self.get_request_body(req)),
+                             {'Boot': boot})
 
 
 if __name__ == '__main__':
