@@ -19,7 +19,7 @@ import logging
 from .api.system import IBMCSystemClient
 from .connector import Connector
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
 
 LOG = logging.getLogger(__name__)
 

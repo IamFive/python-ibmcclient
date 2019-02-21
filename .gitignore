@@ -16,3 +16,4 @@ venv/
 # IDE
 .idea/
 /tests/example.py
+/tests/example_ca.pem

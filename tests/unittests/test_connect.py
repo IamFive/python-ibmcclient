@@ -7,6 +7,7 @@ import unittest
 import responses
 
 import ibmc_client
+from ibmc_client import exceptions
 from tests.unittests import BaseUnittest
 
 _BOOT_SEQUENCE_MAP = {
@@ -63,6 +64,13 @@ class TestConnect(BaseUnittest):
         self.assertEqual(request3.url,
                          '%s%s' % (self.address, session['location']))
         self.assertEqual(request3.method, 'DELETE')
+
+    @responses.activate
+    def testConnectFailed(self):
+        self.mock_responses([])
+        with self.assertRaises(exceptions.ConnectionError):
+            with ibmc_client.connect(**self.server) as client:
+                client.system.get()
 
 
 if __name__ == '__main__':

@@ -147,7 +147,7 @@ class Connector(object):
                 else:
                     raise exceptions.raise_for_response(method, url, response)
             else:
-                raise e
+                raise exceptions.ConnectionError(url=url, error=e)
 
     def _get_resource_etag(self, url):
         res = self.make_req('GET', url)
