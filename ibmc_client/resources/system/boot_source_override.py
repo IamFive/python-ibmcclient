@@ -13,20 +13,16 @@
 #    under the License.
 
 # Version 0.0.2
-from pprint import pformat
-
-from ibmc_client.resources import BaseResource
 
 
-class BootSourceOverride(BaseResource):
+class BootSourceOverride(object):
     """iBMC Boot Source Override Resource Model"""
 
     def __init__(self, json):
-        """Initial a iBMC System Resource Client
+        """Initial a iBMC BootSourceOverride resource
 
-        :param json: system resource json format data
         """
-        super(BootSourceOverride, self).__init__(json)
+        self._json = json
 
     @property
     def target(self):
@@ -43,15 +39,3 @@ class BootSourceOverride(BaseResource):
     @property
     def supported_boot_devices(self):
         return self._json['BootSourceOverrideTarget@Redfish.AllowableValues']
-
-    def to_str(self):
-        """
-        Returns the string representation of the model
-        """
-        return pformat(self._json)
-
-    def __repr__(self):
-        """
-        For `print` and `pprint`
-        """
-        return self.to_str()

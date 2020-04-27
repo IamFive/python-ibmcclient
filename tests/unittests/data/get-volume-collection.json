@@ -1,0 +1,15 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Systems/Members/1/Storages/Members/RAIDStorage0/Volumes/$entity",
+  "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes",
+  "@odata.type": "#VolumeCollection.VolumeCollection",
+  "Name": "Volume Collection",
+  "Members@odata.count": 2,
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive0"
+    },
+    {
+      "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive1"
+    }
+  ]
+}

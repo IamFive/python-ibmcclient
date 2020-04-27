@@ -16,34 +16,58 @@
 import logging
 
 from ibmc_client import constants
+from ibmc_client.api import BaseApiClient
 from ibmc_client.api.system.bios import IBMCBiosClient
+from ibmc_client.api.system.storage import IBMCStorageClient
+from ibmc_client.api.system.volume import IbmcVolumeClient
+from ibmc_client.constants import GET, PATCH, POST
 from ibmc_client.resources.system import System
 
 LOG = logging.getLogger(__name__)
 
 
-class IBMCSystemClient(object):
+class IbmcSystemClient(BaseApiClient):
     """iBMC API Client"""
 
-    def __init__(self, connector):
+    def __init__(self, connector, ibmc_client=None):
         """Initial a iBMC System Resource Client
 
         :param connector: iBMC http connector
+        :param ibmc_client: a reference to global
+            :class:`~ibmc_client.IBMCClient` object
         """
-        self.connector = connector
-        self._bios = IBMCBiosClient(self.connector)
+        super(IbmcSystemClient, self).__init__(connector, ibmc_client)
+        self._bios_client = IBMCBiosClient(self.connector, self.ibmc_client)
+        self._storage_client = IBMCStorageClient(self.connector,
+                                                 self.ibmc_client)
+        self._volume_client = IbmcVolumeClient(self.connector,
+                                               self.ibmc_client)
 
     def get(self):
         uri = self.connector.system_base_url
-        json = self.connector.request('GET', uri).json()
-        return System(json, self)
+        resp = self.connector.request(GET, uri)
+        return System(resp, ibmc_client=self.ibmc_client)
 
     @property
     def bios(self):
         """Only V5 series servers support this function.
         :return:
         """
-        return self._bios
+        return self._bios_client
+
+    @property
+    def storage(self):
+        """Get iBMC out-band storage client
+        :return:
+        """
+        return self._storage_client
+
+    @property
+    def volume(self):
+        """Get iBMC volume client
+        :return:
+        """
+        return self._volume_client
 
     def reset(self, reset_type):
         """Restart server
@@ -53,7 +77,7 @@ class IBMCSystemClient(object):
         action_uri = self.get().get_action_uri('ComputerSystem.Reset')
         url = self.connector.get_url(action_uri)
         payload = dict(ResetType=reset_type)
-        self.connector.request('POST', url, json=payload)
+        self.connector.request(POST, url, json=payload)
 
     def set_boot_source(self, device, mode=None,
                         enabled=constants.BOOT_SOURCE_ENABLED_ONCE):
@@ -75,6 +99,6 @@ class IBMCSystemClient(object):
         if mode:
             payload['Boot']['BootSourceOverrideMode'] = mode
 
-        self.connector.request('PATCH', self.connector.system_base_url,
+        self.connector.request(PATCH, self.connector.system_base_url,
                                json=payload)
         LOG.debug('Set iBMC boot source override succeed')

@@ -18,7 +18,8 @@ import requests
 import six
 
 from ibmc_client import exceptions
-from ibmc_client.constants import GET, PATCH, PUT, POST, DELETE
+from ibmc_client.constants import GET, PATCH, PUT, POST, DELETE, \
+    HEADER_IF_MATCH, HEADER_ETAG, HEADER_CONTENT_TYPE, HEADER_AUTH_TOKEN
 
 LOG = logging.getLogger(__name__)
 
@@ -119,17 +120,17 @@ class Connector(object):
             'Password': self._password
         }
         create_session_url = '%s/Sessions' % self.session_service_base_url
-        res = self.request('POST', create_session_url, json=payload)
+        res = self.request(POST, create_session_url, json=payload)
 
         # cache session
-        token = res.headers.get('X-Auth-Token')
+        token = res.headers.get(HEADER_AUTH_TOKEN)
         location = res.headers.get('Location')
         self.session = dict(address=self.address, token=token,
                             location=location)
 
         # update request credential header
         self._conn.headers.update({
-            'X-Auth-Token': token,
+            HEADER_AUTH_TOKEN: token,
         })
 
     def _get_resource_id(self):
@@ -143,14 +144,16 @@ class Connector(object):
           or switch module.
         """
         managers_url = self.address + self._meta['Managers']['@odata.id']
-        res = self.request('GET', managers_url).json()
+        res = self.request(GET, managers_url).json()
         manager_odata_id = res['Members'][0]['@odata.id']
-        self.resource_id = manager_odata_id.split('/')[-1]
+        self._resource_id = manager_odata_id.split('/')[-1]
 
-    def request(self, method, url, json=None, headers=None, retry=False):
+    def request(self, method, url, json=None, etag=None, headers=None,
+                retry=False):
         try:
             url = self.get_url(url)
-            return self._request(method, url, json=json, headers=headers)
+            return self._request(method, url, json=json, etag=etag,
+                                 headers=headers)
         except requests.exceptions.RequestException as e:
             response = e.response
             if response is not None:
@@ -158,14 +161,14 @@ class Connector(object):
                     if response.status_code == 401:
                         # If session expired, renew session then retry
                         self._fetch_session()
-                        return self.request(method, url, json=json,
+                        return self.request(method, url, json=json, etag=etag,
                                             headers=headers, retry=True)
 
                     if response.status_code == 412:
                         # If 412 pre-condition checking failed,
-                        # just retry after 5 seconds.
-                        sleep(5)
-                        return self.request(method, url, json=json,
+                        # just retry after 10 seconds.
+                        sleep(10)
+                        return self.request(method, url, json=json, etag=etag,
                                             headers=headers, retry=True)
 
                 LOG.warning('iBMC response -> %(method)s %(url)s, '
@@ -177,25 +180,35 @@ class Connector(object):
             else:
                 raise exceptions.IBMCConnectionError(url=url, error=e)
 
-    def _request(self, method, url, json=None, headers=None):
+    def _request(self, method, url, json=None, etag=None, headers=None):
         # If request method is PATCH or PUT,
         # "If-Match" header is required by iBMC redfish API.
         if method.upper() in [PATCH, PUT]:
-            res = self.request(GET, url)
             headers = headers or {}
-            headers.update({'If-Match': res.headers.get('ETag')})
+            if not etag:
+                res = self.request(GET, url)
+                headers.update({HEADER_IF_MATCH: res.headers.get(HEADER_ETAG)})
+            else:
+                headers.update({HEADER_IF_MATCH: etag})
 
         if method.upper() in [POST, PATCH, PUT]:
             headers = headers or {}
-            headers.update({'Content-Type': 'application/json'})
+            headers.update({HEADER_CONTENT_TYPE: 'application/json'})
 
-        LOG.debug('iBMC request -> %(method)s %(url)s',
-                  {'method': method, 'url': url, })
+        if url.endswith('/Sessions') and method == POST:
+            LOG.debug('iBMC request -> %(method)s %(url)s',
+                      {'method': method, 'url': url})
+        else:
+            LOG.debug(
+                'iBMC request -> %(method)s %(url)s, payload:: %(payload)s',
+                {'method': method, 'url': url, 'payload': json})
 
         req = requests.Request(method, url, json=json, headers=headers)
         prepped = self._conn.prepare_request(req)
         res = self._conn.send(prepped, timeout=self._DEFAULT_TIMEOUT)
         res.raise_for_status()
-        LOG.debug('iBMC response -> %(method)s %(url)s, code: %(code)s',
-                  {'method': method, 'url': url, 'code': res.status_code})
+        LOG.debug('iBMC response -> %(method)s %(url)s, code: %(code)s, '
+                  'content:: %(content)s',
+                  {'method': method, 'url': url, 'code': res.status_code,
+                   'content': res.text})
         return res

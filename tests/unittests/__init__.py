@@ -2,11 +2,14 @@ import json
 import logging
 import os
 import unittest
+import uuid
+from unittest.mock import Mock
 
-import responses
 import requests
+import responses
 
-from ibmc_client.constants import GET, POST, DELETE
+from ibmc_client.constants import GET, POST, DELETE, HEADER_ETAG, \
+    HEADER_AUTH_TOKEN
 
 requests.packages.urllib3.disable_warnings()
 fmt = ('%(asctime)-15s [%(filename)s#%(funcName)s:%(lineno)s] '
@@ -20,8 +23,8 @@ class BaseUnittest(unittest.TestCase):
     address = "https://server1.ibmc.com"
     username = "username"
     password = "password"
-    token = "FakeToken"
-    etag = "FakeETag"
+    token = str(uuid.uuid4())
+    etag = str(uuid.uuid4())
     session_location = "/redfish/v1/SessionService/Sessions/" + token
 
     def setUp(self):
@@ -35,7 +38,7 @@ class BaseUnittest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def loadJsonFile(self, filename):
+    def load_json_file(self, filename):
         with open('%s/data/%s' % (self.base_path, filename)) as data_file:
             data = json.load(data_file)
             return data
@@ -44,12 +47,12 @@ class BaseUnittest(unittest.TestCase):
     def get_test_api_request(index):
         return responses.calls[index + 3 - 1].request
 
-    def mock_responses(self, test_api_responses):
+    def start_mocked_http_server(self, test_api_responses):
         # redfish root api
         responses.add(responses.Response(
             method=GET,
             url=self.address + '/redfish/v1',
-            json=self.loadJsonFile('redfish.json')
+            json=self.load_json_file('redfish.json')
         ))
 
         # fetch session credential api
@@ -60,7 +63,7 @@ class BaseUnittest(unittest.TestCase):
         responses.add(responses.Response(
             method=GET,
             url=self.address + '/redfish/v1/Managers',
-            json=self.loadJsonFile('manager-collection.json')
+            json=self.load_json_file('manager-collection.json')
         ))
 
         for res in test_api_responses:
@@ -77,7 +80,7 @@ class BaseUnittest(unittest.TestCase):
             method=POST,
             url=self.address + '/redfish/v1/SessionService/Sessions',
             headers={
-                'X-Auth-Token': self.token,
+                HEADER_AUTH_TOKEN: self.token,
                 "Location": location
             },
             content_type='application/json'
@@ -89,3 +92,15 @@ class BaseUnittest(unittest.TestCase):
         if isinstance(body, bytes):
             body = body.decode('utf-8')
         return body
+
+    def new_mocked_response(self, resp_json_file_name, etag=None):
+        """create a new mocked response
+
+        :param resp_json_file_name: indicates the response json content file
+            name
+        :param etag:
+        :return:
+        """
+        _json = self.load_json_file(resp_json_file_name)
+        return Mock(json=Mock(return_value=_json),
+                    headers={HEADER_ETAG: etag if etag else self.etag})

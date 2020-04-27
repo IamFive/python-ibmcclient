@@ -25,15 +25,6 @@ LOG = logging.getLogger(__name__)
 class System(BaseResource):
     """iBMC System Resource Model"""
 
-    def __init__(self, json, client):
-        """Initial a iBMC System Resource Client
-
-        :param json: system resource json format data
-        :param client: system client
-        """
-        super(System, self).__init__(json)
-        self._client = client
-
     @property
     def power_state(self):
         return self._json['PowerState']
@@ -46,10 +37,7 @@ class System(BaseResource):
     @property
     def boot_sequence(self):
         if self._json.get('Bios', None):  # v5 series server
-            return self._client.bios.get().boot_sequence
+            return self._ibmc_client.system.bios.get().boot_sequence
         else:  # V3 series server
             _seq = self._oem['BootupSequence']
             return _seq
-
-    def _boot_seq_v5tov3(self, boot_types):
-        return [self._BOOT_SEQUENCE_MAP.get(t, t) for t in boot_types]
