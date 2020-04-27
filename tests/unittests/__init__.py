@@ -4,9 +4,11 @@ import os
 import unittest
 
 import responses
-import urllib3
+import requests
 
-urllib3.disable_warnings()
+from ibmc_client.constants import GET, POST, DELETE
+
+requests.packages.urllib3.disable_warnings()
 fmt = ('%(asctime)-15s [%(filename)s#%(funcName)s:%(lineno)s] '
        '%(message)s')
 logging.basicConfig(format=fmt)
@@ -19,6 +21,8 @@ class BaseUnittest(unittest.TestCase):
     username = "username"
     password = "password"
     token = "FakeToken"
+    etag = "FakeETag"
+    session_location = "/redfish/v1/SessionService/Sessions/" + token
 
     def setUp(self):
         self.server = dict(
@@ -43,26 +47,18 @@ class BaseUnittest(unittest.TestCase):
     def mock_responses(self, test_api_responses):
         # redfish root api
         responses.add(responses.Response(
-            method='GET',
+            method=GET,
             url=self.address + '/redfish/v1',
             json=self.loadJsonFile('redfish.json')
         ))
 
         # fetch session credential api
-        location = "/redfish/v1/SessionService/Sessions/" + self.token
-        responses.add(responses.Response(
-            method='POST',
-            url=self.address + '/redfish/v1/SessionService/Sessions',
-            headers={
-                'X-Auth-Token': self.token,
-                "Location": location
-            },
-            content_type='application/json'
-        ))
+        responses.add(self.get_mocked_new_session_response(
+            self.session_location))
 
         # get manager api
         responses.add(responses.Response(
-            method='GET',
+            method=GET,
             url=self.address + '/redfish/v1/Managers',
             json=self.loadJsonFile('manager-collection.json')
         ))
@@ -72,9 +68,20 @@ class BaseUnittest(unittest.TestCase):
 
         # delete session credential api
         responses.add(responses.Response(
-            method='DELETE',
-            url=self.address + location
+            method=DELETE,
+            url=self.address + self.session_location
         ))
+
+    def get_mocked_new_session_response(self, location):
+        return responses.Response(
+            method=POST,
+            url=self.address + '/redfish/v1/SessionService/Sessions',
+            headers={
+                'X-Auth-Token': self.token,
+                "Location": location
+            },
+            content_type='application/json'
+        )
 
     @staticmethod
     def get_request_body(request):

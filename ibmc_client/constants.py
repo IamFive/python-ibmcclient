@@ -14,7 +14,27 @@
 
 # Version 0.0.2
 
-# System' PowerState constants
+# HTTP request method shortcut
+import abc
+
+HEAD = 'HEAD'
+"""http method HEAD"""
+
+GET = 'GET'
+"""http method get"""
+
+POST = 'POST'
+"""http method POST"""
+
+PATCH = 'PATCH'
+"""http method PATCH"""
+
+PUT = 'PUT'
+"""http method PATCH"""
+
+DELETE = 'DELETE'
+
+# System PowerState constants
 
 SYSTEM_POWER_STATE_ON = 'On'
 """The system is powered on"""

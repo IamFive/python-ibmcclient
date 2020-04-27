@@ -12,11 +12,13 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 import logging
+from time import sleep
 
 import requests
 import six
 
 from ibmc_client import exceptions
+from ibmc_client.constants import GET, PATCH, PUT, POST, DELETE
 
 LOG = logging.getLogger(__name__)
 
@@ -45,24 +47,34 @@ class Connector(object):
             'User-Agent': 'python-ibmcclient - v%s' % version
         })
 
-        self._meta = self.request('GET', self.base_url).json()
+        self._meta = self.request(GET, self.base_url).json()
+
+    @property
+    def resource_id(self):
+        return self._resource_id
 
     @property
     def system_base_url(self):
-        return '%s%s/%s' % (self.address,
-                            self._meta['Systems']['@odata.id'],
-                            self.resource_id)
+        return '%s/%s' % (self._meta['Systems']['@odata.id'],
+                          self._resource_id)
 
     @property
     def manager_base_url(self):
-        return '%s%s/%s' % (self.address,
-                            self._meta['Managers']['@odata.id'],
-                            self.resource_id)
+        return '%s/%s' % (self._meta['Managers']['@odata.id'],
+                          self._resource_id)
+
+    @property
+    def chassis_base_url(self):
+        return '%s/%s' % (self._meta['Chassis']['@odata.id'],
+                          self._resource_id)
+
+    @property
+    def task_service_base_url(self):
+        return self._meta['Tasks']['@odata.id']
 
     @property
     def session_service_base_url(self):
-        return '%s%s' % (self.address,
-                         self._meta['SessionService']['@odata.id'])
+        return self._meta['SessionService']['@odata.id']
 
     @property
     def version(self):
@@ -79,7 +91,9 @@ class Connector(object):
         elif isinstance(resource, dict) and resource.get("@odata.id", None):
             path = resource.get("@odata.id", None)
 
-        if path.startswith('/redfish/v1'):
+        if path.startswith(self.base_url):
+            return path
+        elif path.startswith('/redfish/v1'):
             return '%s%s' % (self.address, path)
         else:
             return '%s%s' % (self.base_url, path)
@@ -92,7 +106,7 @@ class Connector(object):
     def disconnect(self):
         try:
             session_path = '%(address)s%(location)s' % self.session
-            self.request('DELETE', session_path)
+            self.request(DELETE, session_path)
         except requests.exceptions.RequestException:
             # Failed to delete session, just ignore the errors now.
             # may be the session has expired. we can let it expired auto.
@@ -133,45 +147,55 @@ class Connector(object):
         manager_odata_id = res['Members'][0]['@odata.id']
         self.resource_id = manager_odata_id.split('/')[-1]
 
-    def request(self, method, url, json=None, headers=None):
+    def request(self, method, url, json=None, headers=None, retry=False):
         try:
+            url = self.get_url(url)
             return self._request(method, url, json=json, headers=headers)
         except requests.exceptions.RequestException as e:
             response = e.response
             if response is not None:
-                if response.status_code and response.status_code == 401:
-                    # If session expired, renew session then retry
-                    self._fetch_session()
-                    return self._request(method, url, json=json,
-                                         headers=headers)
-                else:
-                    raise exceptions.raise_for_response(method, url, response)
-            else:
-                raise exceptions.ConnectionError(url=url, error=e)
+                if not retry and response.status_code:
+                    if response.status_code == 401:
+                        # If session expired, renew session then retry
+                        self._fetch_session()
+                        return self.request(method, url, json=json,
+                                            headers=headers, retry=True)
 
-    def _get_resource_etag(self, url):
-        res = self.make_req('GET', url)
-        return res.headers.get('ETag')
+                    if response.status_code == 412:
+                        # If 412 pre-condition checking failed,
+                        # just retry after 5 seconds.
+                        sleep(5)
+                        return self.request(method, url, json=json,
+                                            headers=headers, retry=True)
+
+                LOG.warning('iBMC response -> %(method)s %(url)s, '
+                            'code: %(code)s, response: %(resp_txt)s',
+                            {'method': method, 'url': url,
+                             'code': response.status_code,
+                             'resp_txt': response.content})
+                raise exceptions.raise_for_response(method, url, response)
+            else:
+                raise exceptions.IBMCConnectionError(url=url, error=e)
 
     def _request(self, method, url, json=None, headers=None):
         # If request method is PATCH or PUT,
         # "If-Match" header is required by iBMC redfish API.
-        if method.upper() in ['PATCH', 'PUT']:
-            res = self.request('GET', url)
+        if method.upper() in [PATCH, PUT]:
+            res = self.request(GET, url)
             headers = headers or {}
             headers.update({'If-Match': res.headers.get('ETag')})
 
-        if method.upper() in ['POST', 'PATCH', 'PUT']:
+        if method.upper() in [POST, PATCH, PUT]:
             headers = headers or {}
             headers.update({'Content-Type': 'application/json'})
 
-        LOG.info('iBMC request -> %(method)s %(url)s',
-                 {'method': method, 'url': url, })
+        LOG.debug('iBMC request -> %(method)s %(url)s',
+                  {'method': method, 'url': url, })
 
         req = requests.Request(method, url, json=json, headers=headers)
         prepped = self._conn.prepare_request(req)
         res = self._conn.send(prepped, timeout=self._DEFAULT_TIMEOUT)
         res.raise_for_status()
-        LOG.info('iBMC response -> %(method)s %(url)s, code: %(code)s',
-                 {'method': method, 'url': url, 'code': res.status_code})
+        LOG.debug('iBMC response -> %(method)s %(url)s, code: %(code)s',
+                  {'method': method, 'url': url, 'code': res.status_code})
         return res
