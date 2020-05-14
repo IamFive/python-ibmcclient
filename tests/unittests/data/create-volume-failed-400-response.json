@@ -1,0 +1,19 @@
+{
+  "error": {
+    "code": "Base.1.0.GeneralError",
+    "message": "A general error has occurred. See ExtendedInfo for more information.",
+    "@Message.ExtendedInfo": [
+      {
+        "@odata.type": "/redfish/v1/$metadata#MessageRegistry.1.0.0.MessageRegistry",
+        "MessageId": "iBMC.1.0.UnnecessaryPropWhenCreateVol",
+        "RelatedProperties": [],
+        "Message": "There is no need to set property Oem/Huawei/VolumeRaidLevel when a volume is created on an array or when a cachecade volume is created.",
+        "MessageArgs": [
+          "Oem/Huawei/VolumeRaidLevel"
+        ],
+        "Severity": "Warning",
+        "Resolution": "Try again without unnecessary properties."
+      }
+    ]
+  }
+}

@@ -13,22 +13,26 @@
 #    under the License.
 
 # Version 0.0.2
+from ibmc_client.api import BaseApiClient
+from ibmc_client.constants import GET
 from ibmc_client.resources.system.bios import Bios
 
 
-class IBMCBiosClient(object):
+class IBMCBiosClient(BaseApiClient):
     """iBMC BIOS API Client"""
 
-    def __init__(self, connector):
+    def __init__(self, connector, ibmc_client=None):
         """Initial a iBMC System Resource Client
 
         :param connector: iBMC http connector
+        :param ibmc_client: a reference to global
+            :class:`~ibmc_client.IBMCClient` object
         """
-        self.connector = connector
+        super(IBMCBiosClient, self).__init__(connector, ibmc_client)
 
     def get(self):
         # TODO (qianbiao.ng) should we detect resource odata id from root?
         # keep it hardcode here for now.
         uri = '%s/Bios' % self.connector.system_base_url
-        json = self.connector.request('GET', uri).json()
-        return Bios(json)
+        resp = self.connector.request(GET, uri)
+        return Bios(resp, ibmc_client=self.ibmc_client)

@@ -33,7 +33,14 @@ class IBMCClientError(Exception):
         super(IBMCClientError, self).__init__(self.message)
 
 
-class ConnectionError(IBMCClientError):
+class IBMCClientOperationError(IBMCClientError):
+
+    def __init__(self, error, **kwargs):
+        self.message = error
+        super(IBMCClientOperationError, self).__init__(**kwargs)
+
+
+class IBMCConnectionError(IBMCClientError):
     message = 'Unable to connect to %(url)s. Error: %(error)s'
 
 
@@ -57,11 +64,15 @@ class InvalidParameterValueError(IBMCClientError):
                'Valid values are: %(valid_values)s')
 
 
+class NothingToApplyError(IBMCClientError):
+    message = 'Nothing to apply, at least one property should be specified.'
+
+
 class ArchiveParsingError(IBMCClientError):
     message = 'Failed parsing archive "%(path)s": %(error)s'
 
 
-class HTTPError(IBMCClientError):
+class IBMCHttpRequestError(IBMCClientError):
     """Basic exception for HTTP errors"""
 
     status_code = None
@@ -105,29 +116,83 @@ class HTTPError(IBMCClientError):
                   'error': error}
         LOG.info(('HTTP response for %(method)s %(url)s -> '
                   'status code: %(code)s, error: %(error)s'), kwargs)
-        super(HTTPError, self).__init__(**kwargs)
+        super(IBMCHttpRequestError, self).__init__(**kwargs)
 
 
-class BadRequestError(HTTPError):
+class BadRequestError(IBMCHttpRequestError):
     pass
 
 
-class ResourceNotFoundError(HTTPError):
+class ResourceNotFoundError(IBMCHttpRequestError):
     # Overwrite the complex generic message with a simpler one.
     message = 'Resource %(url)s not found'
 
 
-class ServerSideError(HTTPError):
+class ServerSideError(IBMCHttpRequestError):
     pass
 
 
-class AccessError(HTTPError):
+class AccessError(IBMCHttpRequestError):
     pass
 
 
-class MissingXAuthToken(HTTPError):
+class MissingXAuthToken(IBMCHttpRequestError):
     message = ('No X-Auth-Token returned from remote host when '
                'attempting to establish a session. Error: %(error)s')
+
+
+class NoControllerMatchesHint(IBMCClientError):
+    message = ('No RAID storage controller matches hint %(hint)s. Please '
+               'using storage-id, storage-name or storage-controller-name as '
+               'controller hint.')
+
+
+class NoDriveMatchesHint(IBMCClientError):
+    message = ('No available physical disk matches hint: %(hint)s, '
+               'media-type: %(media_type)s, protocol: %(protocol)s. Please '
+               'using HUAWEI drive-id, drive id, drive name or drive '
+               'serial-number as physical disk hint.')
+
+    def __init__(self, **kwargs):
+        if kwargs['media_type'] is None:
+            kwargs['media_type'] = 'any'
+        if kwargs['protocol'] is None:
+            kwargs['protocol'] = 'any'
+        super(NoDriveMatchesHint, self).__init__(**kwargs)
+
+
+class NotSupportedRaidLevel(IBMCClientError):
+    message = 'RAID level %(raid_level)s is supported.'
+
+    def __init__(self, raid_level, controller=None):
+        kwargs = {'raid_level': raid_level}
+        if controller:
+            kwargs.update(controller='controller')
+            self.message = ('RAID level %(raid_level)s is supported by '
+                            'controller %(controller)s.')
+        super(NotSupportedRaidLevel, self).__init__(**kwargs)
+
+
+class NoRaidControllerFound(IBMCClientError):
+    message = 'No RAID storage controller found.'
+
+
+class ControllerHintRequired(IBMCClientError):
+    message = ('Option `controller` is required because more than one RAID '
+               'storage controller exists. Please review target-raid-config.')
+
+
+class TaskFailed(IBMCClientError):
+    message = '%(message)s'
+
+
+class InvalidLogicalDiskConfig(IBMCClientError):
+    message = ('Logical-disk config `%(config)s` is invalid, reason: %('
+               'reason)s')
+
+
+class NotSuitablePhysicalDiskGroup(IBMCClientError):
+    message = '%(message)s'
 
 
 def raise_for_response(method, url, response):
@@ -144,4 +209,4 @@ def raise_for_response(method, url, response):
     elif response.status_code >= http_client.INTERNAL_SERVER_ERROR:
         raise ServerSideError(method, url, response)
     else:
-        raise HTTPError(method, url, response)
+        raise IBMCHttpRequestError(method, url, response)

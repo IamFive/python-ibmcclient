@@ -1,0 +1,68 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Chassis/Members/1/Drives/Members/$entity",
+  "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk41",
+  "@odata.type": "#Drive.v1_1_0.Drive",
+  "Id": "HDDPlaneDisk41",
+  "Name": "Disk41",
+  "Model": "HUC101860CSS200",
+  "Revision": "A902",
+  "Status": {
+    "Health": "OK",
+    "State": "Enabled"
+  },
+  "CapacityBytes": 598999040000,
+  "FailurePredicted": false,
+  "Protocol": "SAS",
+  "MediaType": "HDD",
+  "Manufacturer": "HGST",
+  "SerialNumber": "0BHDNMDH",
+  "CapableSpeedGbs": 12,
+  "NegotiatedSpeedGbs": 12,
+  "PredictedMediaLifeLeftPercent": null,
+  "IndicatorLED": "Off",
+  "HotspareType": "None",
+  "StatusIndicator": "OK",
+  "Location": [
+    {
+      "Info": "Disk41",
+      "InfoFormat": "DeviceName"
+    }
+  ],
+  "Oem": {
+    "Huawei": {
+      "DriveID": 41,
+      "RebuildState": "DoneOrNotRebuilt",
+      "RebuildProgress": null,
+      "PatrolState": "DoneOrNotPatrolled",
+      "TemperatureCelsius": 42,
+      "FirmwareStatus": "UnconfiguredGood",
+      "SpareforLogicalDrives": [],
+      "SASAddress": [
+        "5000cca07d4f6589",
+        "0000000000000000"
+      ],
+      "Type": "Disk",
+      "Position": "HDDPlane",
+      "HoursOfPoweredUp": null,
+      "SASSmartInformation": {
+        "MediaErrorCount": 0,
+        "PrefailErrorCount": 0,
+        "OtherErrorCount": 0,
+        "DiskTemperatureCelsius": null,
+        "DiskStripeTemperatureCelsius": null,
+        "ElementsInGrownDefectList": null,
+        "ElementsInPrimaryDefectList": null,
+        "BlocksSentToInitiator": null,
+        "BlocksReceivedFromInitiator": null,
+        "NumberOfMinutesUntilNextSMARTTest": null,
+        "SequenceNumberOfLastPredFailEvent": null,
+        "HealthStatus": null,
+        "WeekAndYearOfManufacture": null
+      },
+      "SATASmartInformation": null
+    }
+  },
+  "Links": {
+    "Volumes": []
+  }
+}

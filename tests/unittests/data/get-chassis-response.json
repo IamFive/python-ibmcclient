@@ -1,0 +1,76 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Chassis/Members/$entity",
+  "@odata.id": "/redfish/v1/Chassis/1",
+  "@odata.type": "#Chassis.v1_4_0.Chassis",
+  "Id": "1",
+  "Name": "Computer System Chassis",
+  "ChassisType": "Rack",
+  "IndicatorLED": "Off",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "Oem": {
+    "Huawei": {
+      "ChassisID": null,
+      "InletTemperatureCelsius": 26,
+      "Boards": {
+        "@odata.id": "/redfish/v1/Chassis/1/Boards"
+      }
+    }
+  },
+  "Thermal": {
+    "@odata.id": "/redfish/v1/Chassis/1/Thermal"
+  },
+  "Power": {
+    "@odata.id": "/redfish/v1/Chassis/1/Power"
+  },
+  "NetworkAdapters": {
+    "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters"
+  },
+  "Links": {
+    "ComputerSystems": [
+      {
+        "@odata.id": "/redfish/v1/Systems/1"
+      }
+    ],
+    "ManagedBy": [
+      {
+        "@odata.id": "/redfish/v1/Managers/1"
+      }
+    ],
+    "Drives": [
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk0"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk1"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk2"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk3"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk4"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk5"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk6"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk7"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk40"
+      },
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk41"
+      }
+    ],
+    "PCIeDevices": []
+  }
+}

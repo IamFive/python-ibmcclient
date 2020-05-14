@@ -1,0 +1,30 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#TaskService/Tasks/Members/$entity",
+  "@odata.type": "#Task.v1_0_2.Task",
+  "@odata.id": "/redfish/v1/TaskService/Tasks/2",
+  "Id": "2",
+  "Name": "volume creation task",
+  "TaskState": "Exception",
+  "StartTime": "2020-04-28T11:35:31+08:00",
+  "EndTime": "2020-04-28T11:35:32+08:00",
+  "TaskStatus": "Warning",
+  "Messages": {
+    "@odata.type": "/redfish/v1/$metadata#MessageRegistry.1.0.0.MessageRegistry",
+    "MessageId": "iBMC.1.0.PhysicalDiskIdInvalid",
+    "RelatedProperties": [
+      "#/Oem/Huawei/Drives"
+    ],
+    "Message": "The value [0, 0] of the property Oem/Huawei/Drives is invalid because the drive ID list contains invalid drive ID.",
+    "MessageArgs": [
+      "[0, 0]",
+      "Oem/Huawei/Drives"
+    ],
+    "Severity": "Warning",
+    "Resolution": "Try again using a valid value."
+  },
+  "Oem": {
+    "Huawei": {
+      "TaskPercentage": null
+    }
+  }
+}

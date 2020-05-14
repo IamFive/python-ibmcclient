@@ -1,0 +1,27 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#TaskService/Tasks/Members/$entity",
+  "@odata.type": "#Task.v1_0_2.Task",
+  "@odata.id": "/redfish/v1/TaskService/Tasks/4",
+  "Id": "4",
+  "Name": "volume creation task",
+  "TaskState": "Completed",
+  "StartTime": "2020-04-28T10:50:12+08:00",
+  "EndTime": "2020-04-28T10:50:17+08:00",
+  "TaskStatus": "OK",
+  "Messages": {
+    "@odata.type": "/redfish/v1/$metadata#MessageRegistry.1.0.0.MessageRegistry",
+    "MessageId": "iBMC.1.0.VolumeCreationSuccess",
+    "RelatedProperties": [],
+    "Message": "The volume is successfully created, and the URI is /redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive0.",
+    "MessageArgs": [
+      "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive0"
+    ],
+    "Severity": "OK",
+    "Resolution": "None"
+  },
+  "Oem": {
+    "Huawei": {
+      "TaskPercentage": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#TaskService/Tasks/Members/$entity",
+  "@odata.type": "#Task.v1_0_2.Task",
+  "@odata.id": "/redfish/v1/TaskService/Tasks/2",
+  "Id": "2",
+  "Name": "volume creation task",
+  "TaskState": "New",
+  "StartTime": "2020-04-29T07:24:24+08:00",
+  "Messages": [],
+  "Oem": {
+    "Huawei": {
+      "TaskPercentage": null
+    }
+  }
+}
