@@ -11,9 +11,14 @@ __pycache__/
 # due to using tox and pytest
 .tox
 .cache
-venv/
+.venv/
 
 # IDE
-.idea/
+.idea
+.vscode
 /tests/example.py
 /tests/example_ca.pem
+
+# Coverage
+htmlcov
+.coverage

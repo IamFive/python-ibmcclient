@@ -1,0 +1,58 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Chassis/Members/1/Drives/Members/$entity",
+  "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk6",
+  "@odata.type": "#Drive.v1_1_0.Drive",
+  "Id": "HDDPlaneDisk6",
+  "Name": "Disk6",
+  "Model": null,
+  "Revision": "FJ3J",
+  "Status": {
+    "Health": "OK",
+    "State": "Enabled"
+  },
+  "CapacityBytes": 3999999721472,
+  "FailurePredicted": false,
+  "Protocol": "SATA",
+  "MediaType": "HDD",
+  "Manufacturer": "ATA",
+  "SerialNumber": "38DFK62UF77D",
+  "CapableSpeedGbs": 6,
+  "NegotiatedSpeedGbs": 12,
+  "PredictedMediaLifeLeftPercent": null,
+  "IndicatorLED": "Off",
+  "HotspareType": "None",
+  "StatusIndicator": "OK",
+  "Location": [
+    {
+      "Info": "Disk6",
+      "InfoFormat": "DeviceName"
+    }
+  ],
+  "Oem": {
+    "Huawei": {
+      "DriveID": 6,
+      "RebuildState": "DoneOrNotRebuilt",
+      "RebuildProgress": null,
+      "PatrolState": "DoneOrNotPatrolled",
+      "TemperatureCelsius": 37,
+      "FirmwareStatus": "UnconfiguredGood",
+      "SpareforLogicalDrives": [],
+      "SASAddress": [
+        "500e004aaaaaaa06",
+        "0000000000000000"
+      ],
+      "Type": "Disk",
+      "Position": "HDDPlane",
+      "HoursOfPoweredUp": null,
+      "SATASmartInformation": {
+        "AttributeRevision": null,
+        "AttributeRevisionNumber": null,
+        "AttributeItemList": []
+      },
+      "SASSmartInformation": null
+    }
+  },
+  "Links": {
+    "Volumes": []
+  }
+}

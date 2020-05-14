@@ -26,13 +26,15 @@ _BOOT_SEQUENCE_MAP = {
 class Bios(BaseResource):
     """iBMC System Resource Model"""
 
-    def __init__(self, json):
-        """Initial a iBMC System Resource Client
-
-        :param json: bios attribute resource json format data
-        """
-        super(Bios, self).__init__(json)
+    def extra_init_action(self):
         self._attrs = self._json['Attributes']
+
+    def __init__(self, resp, ibmc_client=None):
+        """Initial a iBMC System BIOS resource
+
+        :param resp: bios attribute resource HTTP response
+        """
+        super(Bios, self).__init__(resp, ibmc_client=ibmc_client)
 
     @property
     def boot_sequence(self):

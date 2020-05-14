@@ -10,3 +10,9 @@ include test-requirements.txt
 
 # Include the data files
 recursive-include data *
+recursive-include ibmc_client *.json
+
+exclude tox.ini
+exclude coverage.sh
+exclude tests
+recursive-exclude tests *

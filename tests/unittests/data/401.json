@@ -1,0 +1,17 @@
+{
+  "error": {
+    "code": "Base.1.0.GeneralError",
+    "message": "A general error has occurred. See ExtendedInfo for more information.",
+    "@Message.ExtendedInfo": [
+      {
+        "@odata.type": "/redfish/v1/$metadata#MessageRegistry.1.0.0.MessageRegistry",
+        "MessageId": "iBMC.1.0.AuthorizationFailed",
+        "RelatedProperties": [],
+        "Message": "Authorization failed because the user name or password is incorrect, or your account is locked.",
+        "MessageArgs": [],
+        "Severity": "Warning",
+        "Resolution": "Try again using the correct user name and password, or after your account is unlocked."
+      }
+    ]
+  }
+}

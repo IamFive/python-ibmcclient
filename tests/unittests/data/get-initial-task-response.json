@@ -1,0 +1,15 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#TaskService/Tasks/Members/$entity",
+  "@odata.type": "#Task.v1_0_2.Task",
+  "@odata.id": "/redfish/v1/TaskService/Tasks/1",
+  "Id": "1",
+  "Name": "mock task",
+  "TaskState": "Running",
+  "StartTime": "2020-04-28T08:17:41+08:00",
+  "Messages": [],
+  "Oem": {
+    "Huawei": {
+      "TaskPercentage": null
+    }
+  }
+}

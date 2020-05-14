@@ -1,0 +1,58 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Chassis/Members/1/Drives/Members/$entity",
+  "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk2",
+  "@odata.type": "#Drive.v1_1_0.Drive",
+  "Id": "HDDPlaneDisk2",
+  "Name": "Disk2",
+  "Model": null,
+  "Revision": "FJ3J",
+  "Status": {
+    "Health": "Warning",
+    "State": "Disabled"
+  },
+  "CapacityBytes": 3999999721472,
+  "FailurePredicted": false,
+  "Protocol": "SATA",
+  "MediaType": "HDD",
+  "Manufacturer": "ATA",
+  "SerialNumber": "38DOK38CF77D",
+  "CapableSpeedGbs": 6,
+  "NegotiatedSpeedGbs": 12,
+  "PredictedMediaLifeLeftPercent": null,
+  "IndicatorLED": "Off",
+  "HotspareType": "None",
+  "StatusIndicator": "Fail",
+  "Location": [
+    {
+      "Info": "Disk2",
+      "InfoFormat": "DeviceName"
+    }
+  ],
+  "Oem": {
+    "Huawei": {
+      "DriveID": 2,
+      "RebuildState": "DoneOrNotRebuilt",
+      "RebuildProgress": null,
+      "PatrolState": "DoneOrNotPatrolled",
+      "TemperatureCelsius": 39,
+      "FirmwareStatus": "Foreign",
+      "SpareforLogicalDrives": [],
+      "SASAddress": [
+        "500e004aaaaaaa02",
+        "0000000000000000"
+      ],
+      "Type": "Disk",
+      "Position": "HDDPlane",
+      "HoursOfPoweredUp": null,
+      "SATASmartInformation": {
+        "AttributeRevision": null,
+        "AttributeRevisionNumber": null,
+        "AttributeItemList": []
+      },
+      "SASSmartInformation": null
+    }
+  },
+  "Links": {
+    "Volumes": []
+  }
+}

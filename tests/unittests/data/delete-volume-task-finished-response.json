@@ -1,0 +1,27 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#TaskService/Tasks/Members/$entity",
+  "@odata.type": "#Task.v1_0_2.Task",
+  "@odata.id": "/redfish/v1/TaskService/Tasks/1",
+  "Id": "1",
+  "Name": "volume deletion task",
+  "TaskState": "Completed",
+  "StartTime": "2020-04-28T11:11:43+08:00",
+  "EndTime": "2020-04-28T11:11:48+08:00",
+  "TaskStatus": "OK",
+  "Messages": {
+    "@odata.type": "/redfish/v1/$metadata#MessageRegistry.1.0.0.MessageRegistry",
+    "MessageId": "iBMC.1.0.VolumeDeletionSuccess",
+    "RelatedProperties": [],
+    "Message": "Volume indicated by the URI /redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive0 is successfully deleted.",
+    "MessageArgs": [
+      "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive0"
+    ],
+    "Severity": "OK",
+    "Resolution": "None"
+  },
+  "Oem": {
+    "Huawei": {
+      "TaskPercentage": null
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Systems/Members/1/Storages/Members/RAIDStorage0/Volumes/Members/$entity",
+  "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes/LogicalDrive1",
+  "@odata.type": "#Volume.v1_0_1.Volume",
+  "Id": "LogicalDrive1",
+  "Name": "LogicalDrive1",
+  "CapacityBytes": 536870912000,
+  "VolumeType": "NonRedundant",
+  "OptimumIOSizeBytes": 262144,
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "Oem": {
+    "Huawei": {
+      "VolumeName": "os_volume_2",
+      "RaidControllerID": 0,
+      "VolumeRaidLevel": "RAID0",
+      "DefaultReadPolicy": "ReadAhead",
+      "DefaultWritePolicy": "WriteBackWithBBU",
+      "DefaultCachePolicy": "DirectIO",
+      "ConsistencyCheck": false,
+      "SpanNumber": 1,
+      "NumDrivePerSpan": 1,
+      "Spans": [
+        {
+          "SpanName": "Span0",
+          "Drives": [
+            {
+              "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk0"
+            }
+          ]
+        }
+      ],
+      "CurrentReadPolicy": "ReadAhead",
+      "CurrentWritePolicy": "WriteThrough",
+      "CurrentCachePolicy": "DirectIO",
+      "AccessPolicy": "ReadWrite",
+      "BootEnable": false,
+      "BGIEnable": true,
+      "SSDCachecadeVolume": false,
+      "SSDCachingEnable": false,
+      "AssociatedCacheCadeVolume": [],
+      "DriveCachePolicy": "Unchanged",
+      "OSDriveName": null
+    }
+  },
+  "Links": {
+    "Drives": [
+      {
+        "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk0"
+      }
+    ]
+  }
+}
