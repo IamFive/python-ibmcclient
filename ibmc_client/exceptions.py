@@ -195,6 +195,12 @@ class NotSuitablePhysicalDiskGroup(IBMCClientError):
     message = '%(message)s'
 
 
+class ControllerNotSupportOOB(IBMCClientError):
+    message = ('RAID controller `%(controller)s` does not support OOB '
+               'management. Currently, ibmc RAID interface can only manage '
+               'RAID controller which support OOB management.')
+
+
 def raise_for_response(method, url, response):
     """Raise a correct error class, if needed."""
     if response.status_code < http_client.BAD_REQUEST:

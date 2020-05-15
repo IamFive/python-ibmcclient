@@ -113,7 +113,7 @@ class LogicalDisk(object):
         return self._physical_disks and len(self._physical_disks) > 0
 
     def init_ctrl(self, controllers):
-        # type: (Storage) -> None
+        # type: (list[Storage]) -> None
         """initialize storage controller for this logical disk
 
         :param controllers: a list controller object of iBMC
@@ -134,6 +134,11 @@ class LogicalDisk(object):
             if not self.controller:
                 raise exceptions.NoControllerMatchesHint(
                     hint=self._controller_hint)
+
+        if not self.controller.support_oob:
+            ctrl_name = (self._controller_hint if self._controller_hint else
+                         self.controller.controller_name)
+            raise exceptions.ControllerNotSupportOOB(controller=ctrl_name)
 
         if (self.raid_setting.name not in self.controller.supported_raid_levels
                 and self.raid_setting.name != raid_utils.JBOD):
@@ -499,6 +504,9 @@ class IBMCStorageClient(BaseApiClient):
         LOG.info("Start delete all RAID configuration.")
         storage_collection = self.list()
         for storage in storage_collection:
+            if not storage.support_oob:
+                raise exceptions.ControllerNotSupportOOB(
+                    controller=storage.controller_name)
             LOG.info("Start delete RAID configuration for %s.", storage.id)
             # restore RAID controller
             # storage.restore()

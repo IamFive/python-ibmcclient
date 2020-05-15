@@ -5,9 +5,9 @@ import logging
 import unittest
 import uuid
 from random import shuffle
-from mock.mock import patch, Mock, call
 
 import responses
+from mock.mock import patch, Mock, call
 from requests import Response
 
 import ibmc_client
@@ -74,6 +74,8 @@ def mock_ctrl(prototype_list):
         drive_data_list = prototype.pop('drives')
         volume_data_list = prototype.pop('volumes')
         ctrl = Mock(spec=Storage, **prototype)
+        ctrl.name = ctrl.id
+        ctrl.controller_name = ctrl.id
         ctrl.matches.side_effect = construct_hint_matches_func(ctrl.id)
 
         volumes = []
@@ -154,15 +156,15 @@ class TestStorageClient(BaseUnittest):
 
     def testStorageHintMatches(self):
         resp = self.new_mocked_response('get-raid-storage-0.json')
-        storage = Storage(resp)
+        controller = Storage(resp)
 
         should_pass_hints = ('RAIDStorage0', 'RAID Card1 Controller')
         for hint in should_pass_hints:
-            self.assertTrue(storage.matches(hint), 'correct storage hints')
+            self.assertTrue(controller.matches(hint), 'correct storage hints')
 
         should_not_pass_hints = ('RAIDStorage', 'RAID Card Controller', None)
         for hint in should_not_pass_hints:
-            self.assertFalse(storage.matches(hint), 'wrong storage hints')
+            self.assertFalse(controller.matches(hint), 'wrong storage hints')
 
     @responses.activate
     def testGetStorage(self):
@@ -176,29 +178,29 @@ class TestStorageClient(BaseUnittest):
             )
         ])
         with ibmc_client.connect(**self.server) as client:
-            storage = client.system.storage.get('RAIDStorage0')
-            self._assertStorage(storage)
+            controller = client.system.storage.get('RAIDStorage0')
+            self._assertStorage(controller)
 
-    def _assertStorage(self, storage):
-        self.assertEqual(storage.id, 'RAIDStorage0',
+    def _assertStorage(self, controller):
+        self.assertEqual(controller.id, 'RAIDStorage0',
                          'storage id does not match')
-        self.assertEqual(storage.name, 'RAIDStorage0',
+        self.assertEqual(controller.name, 'RAIDStorage0',
                          'storage name does not match')
-        self.assertEqual(storage.controller_name, 'RAID Card1 Controller',
+        self.assertEqual(controller.controller_name, 'RAID Card1 Controller',
                          'storage controller name does not match')
-        self.assertEqual(storage.model, 'SAS3508',
+        self.assertEqual(controller.model, 'SAS3508',
                          'storage raid level does not match')
-        self.assertEqual(storage.supported_raid_levels,
+        self.assertEqual(controller.supported_raid_levels,
                          ["RAID0", "RAID1", "RAID5", "RAID6", "RAID10",
                           "RAID50", "RAID60"],
                          'storage supported raid level does not match')
-        # self.assertEqual(storage.support_oob, True,
-        #                  'storage support OOB does not match')
-        self.assertEqual(storage.is_jbod_mode, False,
+        self.assertEqual(controller.support_oob, True,
+                         'storage support OOB does not match')
+        self.assertEqual(controller.is_jbod_mode, False,
                          'storage drive number per span does not match')
-        self.assertEqual(storage.status.state, 'Enabled',
+        self.assertEqual(controller.status.state, 'Enabled',
                          'storage state does not match')
-        self.assertEqual(storage.status.health, 'OK',
+        self.assertEqual(controller.status.health, 'OK',
                          'storage health does not match')
 
     @responses.activate
@@ -267,32 +269,32 @@ class TestStorageClient(BaseUnittest):
     @responses.activate
     def testForceReloadStorageVolumes(self):
         with patch.object(Storage, '__init__', return_value=None):
-            storage = Storage()
+            controller = Storage()
 
             volume_collection_odata_id = Mock()
-            storage._json = dict(Volumes=volume_collection_odata_id)
-            storage._ibmc_client = Mock()
+            controller._json = dict(Volumes=volume_collection_odata_id)
+            controller._ibmc_client = Mock()
 
             rv = [[Mock(), Mock()], [Mock(), Mock()]]
-            storage._ibmc_client.load_odata_collection.side_effect = rv
-            volumes = storage.volumes()
+            controller._ibmc_client.load_odata_collection.side_effect = rv
+            volumes = controller.volumes()
             self.assertEqual(
-                storage._ibmc_client.load_odata_collection.call_count, 1)
+                controller._ibmc_client.load_odata_collection.call_count, 1)
             self.assertEqual(volumes, rv[0])
-            storage._ibmc_client.load_odata_collection.assert_has_calls(
+            controller._ibmc_client.load_odata_collection.assert_has_calls(
                 [call(volume_collection_odata_id, Volume)]
             )
 
-            storage._ibmc_client.load_odata_collection.reset_mock()
-            volumes = storage.volumes()
+            controller._ibmc_client.load_odata_collection.reset_mock()
+            volumes = controller.volumes()
             self.assertEqual(volumes, rv[0])
-            storage._ibmc_client.load_odata_collection.assert_not_called()
+            controller._ibmc_client.load_odata_collection.assert_not_called()
 
-            volumes = storage.volumes(force_reload=True)
+            volumes = controller.volumes(force_reload=True)
             self.assertEqual(volumes, rv[1])
             self.assertEqual(
-                storage._ibmc_client.load_odata_collection.call_count, 1)
-            storage._ibmc_client.load_odata_collection.assert_has_calls(
+                controller._ibmc_client.load_odata_collection.call_count, 1)
+            controller._ibmc_client.load_odata_collection.assert_has_calls(
                 [call(volume_collection_odata_id, Volume)]
             )
 
@@ -319,39 +321,39 @@ class TestStorageClient(BaseUnittest):
 
         self.start_mocked_http_server(resp_list)
         with ibmc_client.connect(**self.server) as client:
-            storage = client.system.storage.get(storage_id)
-            self.assertEqual(len(storage.drives()), 10)
+            ctrl = client.system.storage.get(storage_id)
+            self.assertEqual(len(ctrl.drives()), 10)
             # drives will be cached by default
-            self.assertEqual(len(storage.drives()), 10)
+            self.assertEqual(len(ctrl.drives()), 10)
 
     @responses.activate
     def testForceReloadStorageDrives(self):
         with patch.object(Storage, '__init__', return_value=None):
-            storage = Storage()
+            ctrl = Storage()
 
             drive_odata_list = [Mock(), Mock()]
-            storage._json = dict(Drives=drive_odata_list)
-            storage._ibmc_client = Mock()
+            ctrl._json = dict(Drives=drive_odata_list)
+            ctrl._ibmc_client = Mock()
 
             return_value = [Mock(), Mock(), Mock(), Mock()]
-            storage._ibmc_client.load_odata.side_effect = return_value
-            drives = storage.drives()
+            ctrl._ibmc_client.load_odata.side_effect = return_value
+            drives = ctrl.drives()
 
-            self.assertEqual(storage._ibmc_client.load_odata.call_count, 2)
+            self.assertEqual(ctrl._ibmc_client.load_odata.call_count, 2)
             self.assertEqual(drives, return_value[0:2])
-            storage._ibmc_client.load_odata.assert_has_calls(
+            ctrl._ibmc_client.load_odata.assert_has_calls(
                 [call(odata, Drive) for odata in drive_odata_list]
             )
 
-            storage._ibmc_client.load_odata.reset_mock()
-            drives = storage.drives()
+            ctrl._ibmc_client.load_odata.reset_mock()
+            drives = ctrl.drives()
             self.assertEqual(drives, return_value[0:2])
-            storage._ibmc_client.load_odata.assert_not_called()
+            ctrl._ibmc_client.load_odata.assert_not_called()
 
-            drives = storage.drives(force_reload=True)
+            drives = ctrl.drives(force_reload=True)
             self.assertEqual(drives, return_value[2:])
-            self.assertEqual(storage._ibmc_client.load_odata.call_count, 2)
-            storage._ibmc_client.load_odata.assert_has_calls(
+            self.assertEqual(ctrl._ibmc_client.load_odata.call_count, 2)
+            ctrl._ibmc_client.load_odata.assert_has_calls(
                 [call(odata, Drive) for odata in drive_odata_list]
             )
 
@@ -536,7 +538,25 @@ class TestStorageClient(BaseUnittest):
                               return_value=controllers):
                 client.system.storage.delete_all_raid_configuration()
 
+    @responses.activate
+    @patch('ibmc_client.api.system.storage.time')
+    def testDeleteForNotSupportOOBController(self, patched_time):
+        self.start_mocked_http_server([])
+        with ibmc_client.connect(**self.server) as client:
+            ctrl0 = build_default_ctrl()
+            ctrl0.support_oob = False
+            with self.assertRaises(exceptions.ControllerNotSupportOOB) as c:
+                with patch.object(client.system.storage, 'list',
+                                  return_value=[ctrl0]):
+                    client.system.storage.delete_all_raid_configuration()
 
+            self.assertIn('RAID controller `RAID Card1 Controller` does not '
+                          'support OOB management. Currently, ibmc RAID '
+                          'interface can only manage RAID controller which '
+                          'support OOB management.', c.exception.message)
+
+
+# noinspection PyTypeChecker
 class TestInitLogicalDisk(BaseUnittest):
     """ Logical Disk initialize unit test stubs """
 
@@ -799,6 +819,7 @@ class TestSortAndGroupLogicalDisk(BaseUnittest):
                           disk20, disk19, disk18, disk11, ])
 
 
+# noinspection PyTypeChecker
 class TestRaidStorageConfigurationClient(TestStorageClient):
     """ iBMC storage client unit test stubs """
 
@@ -937,6 +958,28 @@ class TestRaidStorageConfigurationClient(TestStorageClient):
                         self.assertEqual(patched_time.sleep.call_count,
                                          create.call_count)
                         patched_time.reset_mock()
+
+    @responses.activate
+    @patch('ibmc_client.api.system.storage.time')
+    def testNotSupportOOBController(self, patched_time):
+        self.start_mocked_http_server([])
+        with ibmc_client.connect(**self.server) as client:
+            ctrl0 = build_default_ctrl()
+            ctrl0.support_oob = False
+            with self.assertRaises(exceptions.ControllerNotSupportOOB) as c:
+                with patch.object(client.system.storage, 'list',
+                                  return_value=[ctrl0]):
+                    logical_disks = [{
+                        "raid_level": "RAID50",
+                        "size_gb": 'max',
+                    }]
+                    client.system.storage.apply_raid_configuration(
+                        logical_disks)
+
+            self.assertIn('RAID controller `RAID Card1 Controller` does not '
+                          'support OOB management. Currently, ibmc RAID '
+                          'interface can only manage RAID controller which '
+                          'support OOB management.', c.exception.message)
 
     @responses.activate
     def testCombineJbodAndOtherRaidLevel(self):

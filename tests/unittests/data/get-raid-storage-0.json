@@ -1,165 +1,169 @@
 {
-  "@odata.context": "/redfish/v1/$metadata#Systems/Members/1/Storages/Members/$entity",
-  "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0",
-  "@odata.type": "#Storage.v1_1_0.Storage",
-  "Id": "RAIDStorage0",
-  "Name": "RAIDStorage0",
-  "StorageControllers@odata.count": 1,
-  "StorageControllers": [
-    {
-      "MemberId": "0",
-      "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0#/StorageControllers/0",
-      "Name": "RAID Card1 Controller",
-      "Description": "RAID Controller",
-      "Status": {
-        "Health": "OK",
-        "State": "Enabled"
-      },
-      "SpeedGbps": 12,
-      "FirmwareVersion": "5.030.00-1330",
-      "SupportedDeviceProtocols": [
-        "SAS"
-      ],
-      "Manufacturer": null,
-      "Model": "SAS3508",
-      "Oem": {
-        "Huawei": {
-          "SupportedRAIDLevels": [
-            "RAID0",
-            "RAID1",
-            "RAID5",
-            "RAID6",
-            "RAID10",
-            "RAID50",
-            "RAID60"
-          ],
-          "AssociatedCard": {
-            "@odata.id": "/redfish/v1/Chassis/1/Boards/mainboardRAIDCard1"
-          },
-          "SASAddress": "5b4432653921a000",
-          "ConfigurationVersion": "5.0300.03-0043",
-          "MemorySizeMiB": 2048,
-          "MaintainPDFailHistory": true,
-          "CopyBackState": true,
-          "SmarterCopyBackState": true,
-          "JBODState": false,
-          "CapacitanceStatus": {
-            "Health": null,
-            "State": "StandbyOffline"
-          },
-          "DriverInfo": {
-            "DriverName": null,
-            "DriverVersion": null
-          },
-          "DDRECCCount": 0,
-          "MinStripeSizeBytes": 65536,
-          "MaxStripeSizeBytes": 1048576,
-          "PHYStatus": [
-            {
-              "PHYId": 0,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
+    "@odata.context": "/redfish/v1/$metadata#Systems/Members/1/Storages/Members/$entity",
+    "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0",
+    "@odata.type": "#Storage.v1_1_0.Storage",
+    "Id": "RAIDStorage0",
+    "Name": "RAIDStorage0",
+    "StorageControllers@odata.count": 1,
+    "StorageControllers": [
+        {
+            "MemberId": "0",
+            "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0#/StorageControllers/0",
+            "Name": "RAID Card1 Controller",
+            "Description": "RAID Controller",
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
             },
-            {
-              "PHYId": 1,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 2,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 3,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 4,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 5,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 6,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
-            },
-            {
-              "PHYId": 7,
-              "InvalidDwordCount": 0,
-              "LossDwordSyncCount": 0,
-              "PHYResetProblemCount": 0,
-              "RunningDisparityErrorCount": 0
+            "SpeedGbps": 12,
+            "FirmwareVersion": "5.030.00-1330",
+            "SupportedDeviceProtocols": [
+                "SAS"
+            ],
+            "Manufacturer": null,
+            "Model": "SAS3508",
+            "Oem": {
+                "Huawei": {
+                    "SupportedRAIDLevels": [
+                        "RAID0",
+                        "RAID1",
+                        "RAID5",
+                        "RAID6",
+                        "RAID10",
+                        "RAID50",
+                        "RAID60"
+                    ],
+                    "AssociatedCard": {
+                        "@odata.id": "/redfish/v1/Chassis/1/Boards/mainboardRAIDCard1"
+                    },
+                    "Mode": "RAID",
+                    "CachePinnedState": false,
+                    "SASAddress": "5b4432653921a000",
+                    "ConfigurationVersion": "5.0300.03-0043",
+                    "MemorySizeMiB": 2048,
+                    "MaintainPDFailHistory": true,
+                    "CopyBackState": true,
+                    "SmarterCopyBackState": true,
+                    "JBODState": false,
+                    "OOBSupport": true,
+                    "CapacitanceName": null,
+                    "CapacitanceStatus": {
+                        "State": "Absent",
+                        "Health": null
+                    },
+                    "DriverInfo": {
+                        "DriverName": null,
+                        "DriverVersion": null
+                    },
+                    "DDRECCCount": 0,
+                    "MinStripeSizeBytes": 65536,
+                    "MaxStripeSizeBytes": 1048576,
+                    "PHYStatus": [
+                        {
+                            "PHYId": 0,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 1,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 2,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 3,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 4,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 5,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 6,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        },
+                        {
+                            "PHYId": 7,
+                            "InvalidDwordCount": 0,
+                            "LossDwordSyncCount": 0,
+                            "PHYResetProblemCount": 0,
+                            "RunningDisparityErrorCount": 0
+                        }
+                    ]
+                }
             }
-          ]
         }
-      }
-    }
-  ],
-  "Drives@odata.count": 10,
-  "Drives": [
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk0"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk1"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk2"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk3"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk4"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk5"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk6"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk7"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk40"
-    },
-    {
-      "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk41"
-    }
-  ],
-  "Volumes": {
-    "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes"
-  },
-  "Actions": {
-    "Oem": {
-      "Huawei": {
-        "#Storage.RestoreStorageControllerDefaultSettings": {
-          "target": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Actions/Oem/Huawei/Storage.RestoreStorageControllerDefaultSettings",
-          "@Redfish.ActionInfo": "/redfish/v1/Systems/1/Storages/RAIDStorage0/RestoreStorageControllerDefaultSettingsActionInfo"
+    ],
+    "Drives@odata.count": 10,
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk0"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk3"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk4"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk5"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk6"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk7"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk40"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Drives/HDDPlaneDisk41"
         }
-      }
+    ],
+    "Volumes": {
+        "@odata.id": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Volumes"
+    },
+    "Actions": {
+        "Oem": {
+            "Huawei": {
+                "#Storage.RestoreStorageControllerDefaultSettings": {
+                    "target": "/redfish/v1/Systems/1/Storages/RAIDStorage0/Actions/Oem/Huawei/Storage.RestoreStorageControllerDefaultSettings",
+                    "@Redfish.ActionInfo": "/redfish/v1/Systems/1/Storages/RAIDStorage0/RestoreStorageControllerDefaultSettingsActionInfo"
+                }
+            }
+        }
     }
-  }
 }
