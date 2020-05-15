@@ -22,10 +22,10 @@ from ibmc_client.resources import CollectionResource
 class BaseApiClient(object):
     """iBMC base API Client"""
 
-    def __init__(self, connector, ibmc_client):
+    def __init__(self, connector, ibmcclient):
         # type: (ibmc_client.Connector, ibmc_client.IBMCClient) -> None
         self.connector = connector
-        self.ibmc_client = ibmc_client
+        self.ibmc_client = ibmcclient
 
     def load_odata(self, odata_id, odata_type):
         """Load odata resource from odata id

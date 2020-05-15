@@ -33,10 +33,8 @@ class IbmcChassisClient(api.BaseApiClient):
         :param ibmc_client: a reference to global
                :class:`~ibmc_client.IBMCClient` object
         """
-        super(IbmcChassisClient, self).__init__(connector,
-                                                ibmc_client=ibmc_client)
-        self._drive_client = drive.IbmcDriveClient(connector,
-                                                   ibmc_client=ibmc_client)
+        super(IbmcChassisClient, self).__init__(connector, ibmc_client)
+        self._drive_client = drive.IbmcDriveClient(connector, ibmc_client)
 
     def get(self):
         url = self.connector.chassis_base_url
