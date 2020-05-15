@@ -17,9 +17,8 @@ from time import sleep
 import requests
 import six
 
+from ibmc_client import constants
 from ibmc_client import exceptions
-from ibmc_client.constants import GET, PATCH, PUT, POST, DELETE, \
-    HEADER_IF_MATCH, HEADER_ETAG, HEADER_CONTENT_TYPE, HEADER_AUTH_TOKEN
 
 LOG = logging.getLogger(__name__)
 
@@ -48,7 +47,7 @@ class Connector(object):
             'User-Agent': 'python-ibmcclient - v%s' % version
         })
 
-        self._meta = self.request(GET, self.base_url).json()
+        self._meta = self.request(constants.GET, self.base_url).json()
 
     @property
     def resource_id(self):
@@ -107,7 +106,7 @@ class Connector(object):
     def disconnect(self):
         try:
             session_path = '%(address)s%(location)s' % self.session
-            self.request(DELETE, session_path)
+            self.request(constants.DELETE, session_path)
         except requests.exceptions.RequestException:
             # Failed to delete session, just ignore the errors now.
             # may be the session has expired. we can let it expired auto.
@@ -120,17 +119,17 @@ class Connector(object):
             'Password': self._password
         }
         create_session_url = '%s/Sessions' % self.session_service_base_url
-        res = self.request(POST, create_session_url, json=payload)
+        res = self.request(constants.POST, create_session_url, json=payload)
 
         # cache session
-        token = res.headers.get(HEADER_AUTH_TOKEN)
+        token = res.headers.get(constants.HEADER_AUTH_TOKEN)
         location = res.headers.get('Location')
         self.session = dict(address=self.address, token=token,
                             location=location)
 
         # update request credential header
         self._conn.headers.update({
-            HEADER_AUTH_TOKEN: token,
+            constants.HEADER_AUTH_TOKEN: token,
         })
 
     def _get_resource_id(self):
@@ -144,7 +143,7 @@ class Connector(object):
           or switch module.
         """
         managers_url = self.address + self._meta['Managers']['@odata.id']
-        res = self.request(GET, managers_url).json()
+        res = self.request(constants.GET, managers_url).json()
         manager_odata_id = res['Members'][0]['@odata.id']
         self._resource_id = manager_odata_id.split('/')[-1]
 
@@ -183,19 +182,21 @@ class Connector(object):
     def _request(self, method, url, json=None, etag=None, headers=None):
         # If request method is PATCH or PUT,
         # "If-Match" header is required by iBMC redfish API.
-        if method.upper() in [PATCH, PUT]:
+        if method.upper() in [constants.PATCH, constants.PUT]:
             headers = headers or {}
             if not etag:
-                res = self.request(GET, url)
-                headers.update({HEADER_IF_MATCH: res.headers.get(HEADER_ETAG)})
+                res = self.request(constants.GET, url)
+                headers.update({
+                    constants.HEADER_IF_MATCH:
+                        res.headers.get(constants.HEADER_ETAG)})
             else:
-                headers.update({HEADER_IF_MATCH: etag})
+                headers.update({constants.HEADER_IF_MATCH: etag})
 
-        if method.upper() in [POST, PATCH, PUT]:
+        if method.upper() in [constants.POST, constants.PATCH, constants.PUT]:
             headers = headers or {}
-            headers.update({HEADER_CONTENT_TYPE: 'application/json'})
+            headers.update({constants.HEADER_CONTENT_TYPE: 'application/json'})
 
-        if url.endswith('/Sessions') and method == POST:
+        if url.endswith('/Sessions') and method == constants.POST:
             LOG.debug('iBMC request -> %(method)s %(url)s',
                       {'method': method, 'url': url})
         else:

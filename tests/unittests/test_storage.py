@@ -524,10 +524,10 @@ class TestStorageClient(BaseUnittest):
 
                 for ctrl in controllers:
                     # TODO (qianbiao.ng) do we really need to restore storage?
-                    # ctrl.restore.assert_called_once()
-                    ctrl.delete_volume_collection.assert_called_once()
+                    # ctrl.restore.assert_called_once_with()
+                    ctrl.delete_volume_collection.assert_called_once_with()
                     for drive in ctrl.drives():
-                        drive.restore.assert_called_once()
+                        drive.restore.assert_called_once_with()
 
     @responses.activate
     def testDeleteAllRaidConfigurationForNoneCtrl(self):
