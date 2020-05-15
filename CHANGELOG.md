@@ -1,3 +1,6 @@
+## 0.2.2 (2020-05-14)
+ * add typing lib for python<3.5
+
 ## 0.2.1 (2020-05-14)
  * Add OOBSupport check
  * remove __version__ dependency in setup.py
