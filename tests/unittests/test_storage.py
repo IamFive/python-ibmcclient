@@ -233,14 +233,185 @@ class TestStorageClient(BaseUnittest):
         self.start_mocked_http_server(resp_list)
 
         with ibmc_client.connect(**self.server) as client:
-            storage = client.system.storage.get(storage_id)
-            volumes = storage.volumes()
+            controller = client.system.storage.get(storage_id)
+            volumes = controller.volumes()
             self.assertEqual(len(volumes), 2)
             # volumes will be cached by default
             self.assertEqual(len(volumes), 2)
             self.assertEqual(type(volumes[0]), Volume)
             self.assertEqual(type(volumes[1]), Volume)
             self.assertVolume0(volumes[0])
+
+    @responses.activate
+    def testGetStorageSummary(self):
+        storage_id = 'RAIDStorage0'
+        resp_list = [
+            responses.Response(
+                method=GET,
+                url=('https://server1.ibmc.com/redfish/v1/Systems/1'
+                     '/Storages/%s' % storage_id),
+                json=self.load_json_file('get-raid-storage-0.json')
+            )
+
+        ]
+
+        drive_idx_list = list(range(0, 8)) + [40, 41]
+        for idx in drive_idx_list:
+            resp_list.append(responses.Response(
+                method=GET,
+                url=('https://server1.ibmc.com/redfish/v1/Chassis/1/Drives/'
+                     'HDDPlaneDisk%d' % idx),
+                json=self.load_json_file('get-drive-%d.json' % idx)
+            ))
+
+        resp_list.append(responses.Response(
+            method=GET,
+            url=('https://server1.ibmc.com/redfish/v1/Systems/1/Storages'
+                 '/%s/Volumes' % storage_id),
+            json=self.load_json_file('get-volume-collection.json')
+        ))
+
+        volume_ids = [0, 1]
+        for volume_id in volume_ids:
+            resp_list.append(responses.Response(
+                method=GET,
+                url=('https://server1.ibmc.com/redfish/v1/Systems/1/Storages'
+                     '/%s/Volumes/LogicalDrive%d' % (storage_id, volume_id)),
+                json=self.load_json_file('get-volume-%d.json' % volume_id)
+            ))
+
+        self.start_mocked_http_server(resp_list)
+
+        expect = {
+          "Id": "RAIDStorage0",
+          "Name": "RAIDStorage0",
+          "ControllerName": "RAID Card1 Controller",
+          "Model": "SAS3508",
+          "SupportedRAIDLevels": [
+            "RAID0",
+            "RAID1",
+            "RAID5",
+            "RAID6",
+            "RAID10",
+            "RAID50",
+            "RAID60"
+          ],
+          "OOBSupport": True,
+          "JBOD": False,
+          "PhysicalDisks": [
+            {
+              "Id": "HDDPlaneDisk0",
+              "Name": "Disk0",
+              "DriveId": 0,
+              "SerialNumber": "38DGK77LF77D",
+              "FirmwareStatus": "Online",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk1",
+              "Name": "Disk1",
+              "DriveId": 1,
+              "SerialNumber": "38DFK62PF77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk2",
+              "Name": "Disk2",
+              "DriveId": 2,
+              "SerialNumber": "38DOK38CF77D",
+              "FirmwareStatus": "Foreign",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk3",
+              "Name": "Disk3",
+              "DriveId": 3,
+              "SerialNumber": "38DOK386F77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk4",
+              "Name": "Disk4",
+              "DriveId": 4,
+              "SerialNumber": "38DOK389F77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk5",
+              "Name": "Disk5",
+              "DriveId": 5,
+              "SerialNumber": "38DRK4GJF77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk6",
+              "Name": "Disk6",
+              "DriveId": 6,
+              "SerialNumber": "38DFK62UF77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk7",
+              "Name": "Disk7",
+              "DriveId": 7,
+              "SerialNumber": "38DOK385F77D",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "3.6TB"
+            },
+            {
+              "Id": "HDDPlaneDisk40",
+              "Name": "Disk40",
+              "DriveId": 40,
+              "SerialNumber": "0BHDEM3H",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "557.9GB"
+            },
+            {
+              "Id": "HDDPlaneDisk41",
+              "Name": "Disk41",
+              "DriveId": 41,
+              "SerialNumber": "0BHDNMDH",
+              "FirmwareStatus": "UnconfiguredGood",
+              "CapacityBytes": "557.9GB"
+            }
+          ],
+          "LogicalDisks": [
+            {
+              "Id": "LogicalDrive0",
+              "Name": "LogicalDrive0",
+              "VolumeName": "os_volume",
+              "RaidLevel": "RAID0",
+              "SpanNumber": 1,
+              "Bootable": True,
+              "CapacityBytes": "500.0GB",
+              "PhysicalDisks": [
+                "HDDPlaneDisk0"
+              ]
+            },
+            {
+              "Id": "LogicalDrive1",
+              "Name": "LogicalDrive1",
+              "VolumeName": "os_volume_2",
+              "RaidLevel": "RAID0",
+              "SpanNumber": 1,
+              "Bootable": False,
+              "CapacityBytes": "500.0GB",
+              "PhysicalDisks": [
+                "HDDPlaneDisk0"
+              ]
+            }
+          ]
+        }
+
+        with ibmc_client.connect(**self.server) as client:
+            controller = client.system.storage.get(storage_id)
+            summary = controller.summary()
+            self.assertEqual(summary, expect)
 
     def assertVolume0(self, volume0):
         self.assertEqual(volume0.id, 'LogicalDrive0',

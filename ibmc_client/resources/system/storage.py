@@ -136,6 +136,39 @@ class Storage(BaseResource):
     def get_sharable_volumes(self):
         pass
 
+    def summary(self):
+        return {
+            "Id": self.id,
+            "Name": self.name,
+            "ControllerName": self.controller_name,
+            "Model": self.model,
+            "SupportedRAIDLevels": self.supported_raid_levels,
+            "OOBSupport": self.support_oob,
+            "JBOD": self.is_jbod_mode,
+            "PhysicalDisks": [
+                {"Id": drive.id, "Name": drive.name, "DriveId": drive.drive_id,
+                 "SerialNumber": drive.serial_number,
+                 "FirmwareStatus": drive.firmware_state,
+                 "CapacityBytes": utils.human_readable_byte(
+                     drive.capacity_bytes)}
+                for drive in self.drives()
+            ],
+            "LogicalDisks": [
+                {"Id": volume.id, "Name": volume.name,
+                 "VolumeName": volume.volume_oem_name,
+                 "RaidLevel": volume.raid_level,
+                 "SpanNumber": volume.span_number,
+                 "Bootable": volume.bootable,
+                 "CapacityBytes": utils.human_readable_byte(
+                     volume.capacity_bytes),
+                 "PhysicalDisks": [
+                     odata_id.split('/')[-1]
+                     for odata_id in volume.drive_odata_id_collection
+                 ]}
+                for volume in self.volumes()
+            ]
+        }
+
     def matches(self, hint):
         """Check whether current storage matches the hint
 

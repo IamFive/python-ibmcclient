@@ -32,3 +32,18 @@ def str2bool(v):
     :return:
     """
     return v.lower() in ("yes", "true", "t", "1")
+
+
+def human_readable_byte(size_in_byte, suffix='B'):
+    # type: (int, str) -> str
+    """convert int size in byte to human readable size with unit.
+
+    :param size_in_byte: indicates size in bytes
+    :param suffix: suffix append to size unit
+    :return: human readable size
+    """
+    for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
+        if abs(size_in_byte) < 1024.0:
+            return "%3.1f%s%s" % (size_in_byte, unit, suffix)
+        size_in_byte /= 1024.0
+    return "%.1f%s%s" % (size_in_byte, 'Y', suffix)
