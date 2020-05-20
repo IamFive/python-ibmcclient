@@ -1,3 +1,9 @@
+## 0.2.3 (2020-05-20)
+ * adjust delete raid configuration feature: 
+    * remove restore controller action
+    * do not update drive state when JBOD
+ * add storage summary feature
+
 ## 0.2.2 (2020-05-14)
  * add typing lib for python<3.5
 
