@@ -169,10 +169,11 @@ class Drive(BaseResource):
             self.refresh(resp)
 
     def restore(self):
-        """restore drive
+        """restore drive, include operations:
 
-        - set hot-spare type to None if current state is HotSpareDrive
-        - set disk state to UnconfiguredGood if current state is JBOD
+        - [o] set hot-spare type to None if current state is HotSpareDrive
+        - [x] (deprecated) set disk state to UnconfiguredGood if current
+        state is JBOD
 
         :return:
         """
@@ -181,8 +182,10 @@ class Drive(BaseResource):
         if self.firmware_state == constants.DRIVE_FM_STATE_HOTSPARE:
             settings['hotspare_type'] = constants.HOT_SPARE_NONE
 
-        if self.firmware_state == constants.DRIVE_FM_STATE_JBOD:
-            settings['firmware_state'] = constants.DRIVE_FM_STATE_UNCONFIG_GOOD
+        # do not need to restore driver status for JBOD
+        # if self.firmware_state == constants.DRIVE_FM_STATE_JBOD:
+        #     settings['firmware_state'] =
+        #     constants.DRIVE_FM_STATE_UNCONFIG_GOOD
 
         if settings:
             self.set(**settings)

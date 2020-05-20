@@ -184,23 +184,23 @@ class TestChassisDrive(BaseUnittest):
             self.assertEqual(json.loads(self.get_request_body(patch_req)),
                              payload)
 
-    @responses.activate
-    def testRestoreJbodDrive(self):
-        resp = self.new_mocked_response('get-drive-fm-jbod-response.json')
-        self.start_mocked_http_server([
-            responses.Response(
-                method=constants.PATCH,
-                url=('https://server1.ibmc.com/redfish/v1/Chassis/1/Drives'
-                     '/HDDPlaneDisk0'),
-                json=resp.json()
-            )
-        ])
-        with ibmc_client.connect(**self.server) as client:
-            drive = Drive(resp, ibmc_client=client)
-            with patch.object(drive, 'set') as patched_set:
-                drive.restore()
-                patched_set.assert_called_with(
-                    firmware_state=constants.DRIVE_FM_STATE_UNCONFIG_GOOD)
+    # @responses.activate
+    # def testRestoreJbodDrive(self):
+    #     resp = self.new_mocked_response('get-drive-fm-jbod-response.json')
+    #     self.start_mocked_http_server([
+    #         responses.Response(
+    #             method=constants.PATCH,
+    #             url=('https://server1.ibmc.com/redfish/v1/Chassis/1/Drives'
+    #                  '/HDDPlaneDisk0'),
+    #             json=resp.json()
+    #         )
+    #     ])
+    #     with ibmc_client.connect(**self.server) as client:
+    #         drive = Drive(resp, ibmc_client=client)
+    #         with patch.object(drive, 'set') as patched_set:
+    #             drive.restore()
+    #             patched_set.assert_called_with(
+    #                 firmware_state=constants.DRIVE_FM_STATE_UNCONFIG_GOOD)
 
     @responses.activate
     def testRestoreHotSparedDrive(self):

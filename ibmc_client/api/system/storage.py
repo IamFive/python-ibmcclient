@@ -508,15 +508,19 @@ class IBMCStorageClient(BaseApiClient):
                 raise exceptions.ControllerNotSupportOOB(
                     controller=storage.controller_name)
             LOG.info("Start delete RAID configuration for %s.", storage.id)
+
+            # we do not need to restore storage
             # restore RAID controller
             # storage.restore()
-            # TODO(qianbiao.ng) restore API is broken for now, use set instead
-            storage.set(copy_back=True, smarter_copy_back=True, jbod=False)
+            # storage.set(copy_back=True, smarter_copy_back=True, jbod=False)
+
             # delete volume collection of RAID controller
             storage.delete_volume_collection()
+
             # restore all drives
             for drive in storage.drives():
                 drive.restore()
+
             LOG.info("Delete RAID configuration for %s done.", storage.id)
 
         if not storage_collection:
