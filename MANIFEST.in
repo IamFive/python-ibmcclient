@@ -1,12 +1,12 @@
 # Include the README
-include *.md
+include README.rst
+include CHANGELOG.md
 
 # Include the license file
 include LICENSE.txt
 
 # Include dep
 include requirements.txt
-include test-requirements.txt
 
 # Include the data files
 recursive-include data *
@@ -15,4 +15,5 @@ recursive-include ibmc_client *.json
 exclude tox.ini
 exclude coverage.sh
 exclude tests
+exclude test-requirements.txt
 recursive-exclude tests *

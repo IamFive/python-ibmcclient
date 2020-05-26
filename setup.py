@@ -7,10 +7,10 @@ from os import path
 
 from setuptools import setup, find_packages
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 here = path.abspath(path.dirname(__file__))
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
