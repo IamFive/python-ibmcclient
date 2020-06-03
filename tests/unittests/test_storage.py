@@ -1465,6 +1465,46 @@ class TestRaidStorageConfigurationClient(TestStorageClient):
                            'create this logical disk.'),
                           c.exception.message)
 
+    @responses.activate
+    def testSpecifiedPhysicalDiskCountOutOfRange(self):
+        self.start_mocked_http_server([])
+        with ibmc_client.connect(**self.server) as client:
+            controllers = [build_default_ctrl()]
+            with self.assertRaises(exceptions.InvalidLogicalDiskConfig) as c:
+                with patch.object(client.system.storage, 'list',
+                                  return_value=controllers):
+                    logical_disks = [{
+                        "raid_level": "1",
+                        "size_gb": "MAX",
+                        "number_of_physical_disks": 3
+                    }]
+                    client.system.storage.apply_raid_configuration(
+                        logical_disks)
+
+            self.assertIn(('Invalid number_of_physical_disks option value 3, '
+                           'it could not work with raid-level 1.'),
+                          c.exception.message)
+
+    @responses.activate
+    def testSpecifiedPhysicalDiskCountInvalid(self):
+        self.start_mocked_http_server([])
+        with ibmc_client.connect(**self.server) as client:
+            controllers = [build_default_ctrl()]
+            with self.assertRaises(exceptions.InvalidLogicalDiskConfig) as c:
+                with patch.object(client.system.storage, 'list',
+                                  return_value=controllers):
+                    logical_disks = [{
+                        "raid_level": "5+0",
+                        "size_gb": "MAX",
+                        "number_of_physical_disks": 7
+                    }]
+                    client.system.storage.apply_raid_configuration(
+                        logical_disks)
+
+            self.assertIn(('Invalid number_of_physical_disks option value 7, '
+                           'it could not work with raid-level 5+0.'),
+                          c.exception.message)
+
 
 if __name__ == '__main__':
     unittest.main()

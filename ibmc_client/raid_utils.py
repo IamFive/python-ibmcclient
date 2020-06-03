@@ -535,11 +535,33 @@ class Raid(object):
         LOG.info('Group available disks by media type: %(disks)s',
                  {'disks': str(grouped_by_media_type)})
 
+        is_specified_disk_count_legal = disk_count_to_use is None
         best_solution = None
         for (media_type, disks_by_media_type) in grouped_by_media_type.items():
             LOG.info('Try to calculate for media type `%(media_type)s` now.',
                      {'media_type': media_type})
             for span in available_span_list:
+                if disk_count_to_use:
+                    if disk_count_to_use % span != 0:
+                        LOG.info(
+                            'Specified disk count number `%(disk_count)d` does'
+                            ' not match span number %(span)d, continue.',
+                            {'span': span, 'disk_count': disk_count_to_use})
+                        continue
+
+                    disk_count_to_use_per_span = disk_count_to_use / span
+                    if (disk_count_to_use_per_span < raid.min_disks or
+                            disk_count_to_use_per_span > raid.max_disks):
+                        LOG.info(
+                            'Specified disk count number `%(disk_count)d` '
+                            'does not match raid-level %(raid)s with '
+                            'span %(span)d, continue.',
+                            {'span': span, 'disk_count': disk_count_to_use,
+                             'raid': self.key})
+                        continue
+
+                    is_specified_disk_count_legal = True
+
                 min_disks = (disk_count_to_use if disk_count_to_use else
                              raid.min_disks * span)
                 max_disks = (disk_count_to_use if disk_count_to_use else
@@ -604,6 +626,10 @@ class Raid(object):
                     if (len(matched_disks) == len(disks_by_media_type)
                             and target_capacity > 0):
                         break
+
+        if not is_specified_disk_count_legal:
+            raise exceptions.InvalidPhysicalDiskNumber(
+                number_of_physical_disks=disk_count_to_use, raid=self.key)
 
         return best_solution
 

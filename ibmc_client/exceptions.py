@@ -186,6 +186,22 @@ class TaskFailed(IBMCClientError):
     message = '%(message)s'
 
 
+class InvalidPhysicalDiskNumber(IBMCClientError):
+    message = ('Invalid number_of_physical_disks option value %('
+               'number_of_physical_disks)d, it could not work with '
+               'raid-level %(raid)s.')
+
+
+class LackOfDiskSpace(IBMCClientError):
+    message = ('There are not enough available disk space to create'
+               ' this logical disk.')
+
+
+class SpecifiedDisksHasNotEnoughSpace(IBMCClientError):
+    message = ('The specified physical disks do not have enough space '
+               'to create a %(size)dG logical-disk(raid-level %(raid)s).')
+
+
 class InvalidLogicalDiskConfig(IBMCClientError):
     message = ('Logical-disk config `%(config)s` is invalid, reason: %('
                'reason)s')

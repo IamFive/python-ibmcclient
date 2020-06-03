@@ -183,35 +183,37 @@ class LogicalDisk(object):
                         config=self._logical_disk, reason=reason)
                 specified_disks.append(disk)
 
-            solution = self.raid_setting.get_best_matched_disks(
-                self.capacity_bytes, specified_disks, len(specified_disks))
-            if solution:
-                self.span_number = solution.span
-                for disk in solution.disks:
-                    disk.mark_as_exclusive()
-                    self.drives.append(disk.drive_id)
-            else:
-                reason = ('The specified physical disks do not have enough '
-                          'space to create a %dG logical-disk(raid-level %s).'
-                          % (self._size_gb, self.raid_setting.key))
+            try:
+                solution = self.raid_setting.get_best_matched_disks(
+                    self.capacity_bytes, specified_disks, len(specified_disks))
+                if solution:
+                    self.span_number = solution.span
+                    for disk in solution.disks:
+                        disk.mark_as_exclusive()
+                        self.drives.append(disk.drive_id)
+                else:
+                    raise exceptions.SpecifiedDisksHasNotEnoughSpace(
+                        size=self._size_gb, raid=self.raid_setting.key)
+            except exceptions.IBMCClientError as e:
                 raise exceptions.InvalidLogicalDiskConfig(
-                    config=self._logical_disk, reason=reason)
+                    config=self._logical_disk, reason=str(e))
 
         # non-share and auto choose disks (2 cases, both size int and max)
         elif not self.share_physical_disks and not self.use_specified_disks:
-            solution = self.raid_setting.get_best_matched_disks(
-                self.capacity_bytes, excludable_disks,
-                self.number_of_physical_disks)
-            if solution:
-                self.span_number = solution.span
-                for disk in solution.disks:
-                    disk.mark_as_exclusive()
-                    self.drives.append(disk.drive_id)
-            else:
-                reason = ('There are not enough available disk space to create'
-                          ' this logical disk.')
+            try:
+                solution = self.raid_setting.get_best_matched_disks(
+                    self.capacity_bytes, excludable_disks,
+                    self.number_of_physical_disks)
+                if solution:
+                    self.span_number = solution.span
+                    for disk in solution.disks:
+                        disk.mark_as_exclusive()
+                        self.drives.append(disk.drive_id)
+                else:
+                    raise exceptions.LackOfDiskSpace()
+            except exceptions.IBMCClientError as e:
                 raise exceptions.InvalidLogicalDiskConfig(
-                    config=self._logical_disk, reason=reason)
+                    config=self._logical_disk, reason=str(e))
 
         # share and use specified disks (2 cases, both size int and max)
         elif self.share_physical_disks and self.use_specified_disks:
@@ -235,15 +237,16 @@ class LogicalDisk(object):
                     raise exceptions.InvalidLogicalDiskConfig(
                         config=self._logical_disk, reason=reason)
 
-            solution = self.raid_setting.get_best_matched_disks(
-                self.capacity_bytes, specified_disks, len(specified_disks))
-            if solution:
-                self.use_shareable_solution(solution, physical_disk_groups)
-            else:
-                reason = ('There are not enough available disk space to create'
-                          ' this logical disk.')
+            try:
+                solution = self.raid_setting.get_best_matched_disks(
+                    self.capacity_bytes, specified_disks, len(specified_disks))
+                if solution:
+                    self.use_shareable_solution(solution, physical_disk_groups)
+                else:
+                    raise exceptions.LackOfDiskSpace()
+            except exceptions.IBMCClientError as e:
                 raise exceptions.InvalidLogicalDiskConfig(
-                    config=self._logical_disk, reason=reason)
+                    config=self._logical_disk, reason=str(e))
 
         elif self.share_physical_disks and not self.use_specified_disks:
             # if any exists disk group matches, we would not compare it with
@@ -256,16 +259,17 @@ class LogicalDisk(object):
                 self.use_shareable_disk_group = True
                 return
 
-            solution = self.raid_setting.get_best_matched_disks(
-                self.capacity_bytes, excludable_disks,
-                self.number_of_physical_disks)
-            if solution:
-                self.use_shareable_solution(solution, physical_disk_groups)
-            else:
-                reason = ('There are not enough available disk space to '
-                          'create this logical disk.')
+            try:
+                solution = self.raid_setting.get_best_matched_disks(
+                    self.capacity_bytes, excludable_disks,
+                    self.number_of_physical_disks)
+                if solution:
+                    self.use_shareable_solution(solution, physical_disk_groups)
+                else:
+                    raise exceptions.LackOfDiskSpace()
+            except exceptions.IBMCClientError as e:
                 raise exceptions.InvalidLogicalDiskConfig(
-                    config=self._logical_disk, reason=reason)
+                    config=self._logical_disk, reason=str(e))
 
     def use_shareable_solution(
             self,
