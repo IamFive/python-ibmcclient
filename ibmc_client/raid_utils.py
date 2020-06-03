@@ -297,7 +297,7 @@ class PhysicalDiskGroup(object):
         if self.left_capacity_bytes < other.left_capacity_bytes:
             return False
 
-        return False
+        return False  # pragma: no cover
 
     def log(self, find):
         fmt_kwargs = {'disk_group': str(self),
@@ -309,7 +309,7 @@ class PhysicalDiskGroup(object):
             LOG.info('Not a better choice:: disk-group->%(disk_group)s, '
                      'left-capacity-bytes: %(left)d', fmt_kwargs)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return str(self)
 
     def __str__(self):
@@ -376,9 +376,9 @@ class RaidSolution(object):
         if self.disks_total_bytes > other.disks_total_bytes:
             return False
 
-        if self.disks_count < other.disks_count:
+        if self.disks_count < other.disks_count:  # pragma: no cover
             return True
-        if self.disks_count > other.disks_count:
+        if self.disks_count > other.disks_count:  # pragma: no cover
             return False
 
         return False
@@ -518,7 +518,7 @@ class Raid(object):
         :return:
         """
 
-        if self.name == JBOD:
+        if self.name == JBOD:  # pragma: no cover
             return None
 
         LOG.info('Calculate waste least disks for volume(%(raid_level)s) with'
@@ -583,7 +583,7 @@ class Raid(object):
                              'disk_count)d.',
                              {'span': span, 'disk_count': required_disk_count})
 
-                    if required_disk_count % span != 0:
+                    if required_disk_count % span != 0:  # pragma: no cover
                         LOG.info(
                             'Disk count %(disk_count)d does not match span '
                             'number %(span)d, continue.',

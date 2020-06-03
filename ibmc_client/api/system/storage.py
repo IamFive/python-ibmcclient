@@ -371,7 +371,7 @@ class LogicalDisk(object):
         disk.hint = disk_hint
         return disk
 
-    def guess_span_number(self):
+    def guess_span_number(self):  # pragma: no cover
         """(deprecated) guess span number
         """
         if self.raid_setting.name in [raid_utils.RAID0, raid_utils.RAID1,
@@ -435,9 +435,9 @@ def sort_and_group_pending_logical_disk_list(logical_disks):
         if logical_disk1.capacity_bytes != logical_disk2.capacity_bytes:
             return logical_disk1.capacity_bytes - logical_disk2.capacity_bytes
 
-        return 0
+        return 0  # pragma: no cover
 
-    if six.PY2:
+    if six.PY2:  # pragma: no cover
         _logical_disk_list = sorted(
             logical_disks, cmp=compare_pending_logical_disks, reverse=True)
     elif six.PY3:

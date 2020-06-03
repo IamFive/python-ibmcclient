@@ -79,13 +79,13 @@ class BaseResource(object):
             actions = actions['Oem']['Huawei']
             if _action_name in actions:
                 return actions[_action_name]['target']
-        return None
+        return None  # pragma: no cover
 
     def to_str(self):
         """
         Returns the string representation of the model
         """
-        return pformat(self._json)
+        return pformat(self._json)  # pragma: no cover
 
     def __repr__(self):
         """

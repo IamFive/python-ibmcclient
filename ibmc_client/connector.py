@@ -78,7 +78,7 @@ class Connector(object):
 
     @property
     def version(self):
-        return self._meta['RedfishVersion']
+        return self._meta['RedfishVersion']  # pragma: no cover
 
     def get_url(self, resource):
         """get absolute URL for odata resource
@@ -107,7 +107,7 @@ class Connector(object):
         try:
             session_path = '%(address)s%(location)s' % self.session
             self.request(constants.DELETE, session_path)
-        except requests.exceptions.RequestException:
+        except requests.exceptions.RequestException:  # pragma: no cover
             # Failed to delete session, just ignore the errors now.
             # may be the session has expired. we can let it expired auto.
             LOG.warn('Failed to delete session.')

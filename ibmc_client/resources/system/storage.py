@@ -133,9 +133,6 @@ class Storage(BaseResource):
             volume_collection_odata_id, Volume)
         return self._volumes
 
-    def get_sharable_volumes(self):
-        pass
-
     def summary(self):
         return {
             "Id": self.id,
@@ -237,7 +234,7 @@ class Storage(BaseResource):
                 volume_odata_id)
             task.raise_if_failed()
             LOG.info("Delete volume:: %s done.", volume_odata_id)
-        if volume_collection.count == 0:
+        if volume_collection.count == 0:  # pragma: no cover
             LOG.info("No volume present in this storage:: %s", self.id)
         else:
             # sleep some seconds to make sure the deletion has completely
