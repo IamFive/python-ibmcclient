@@ -15,9 +15,9 @@
 # Version 0.0.2
 import logging
 
+from ibmc_client import exceptions
 from ibmc_client.resources import BaseResource
-from ibmc_client.resources.system.boot_source_override \
-    import BootSourceOverride
+from ibmc_client.resources.system.boot_source_override import BootSourceOverride
 
 LOG = logging.getLogger(__name__)
 
@@ -41,3 +41,13 @@ class System(BaseResource):
         else:  # V3 series server
             _seq = self._oem['BootupSequence']
             return _seq
+
+    @property
+    def is_storage_ready(self):
+        key = 'StorageConfigReady'
+        # only supported in latest ibmc
+        if key in self._oem:
+            return self._oem['StorageConfigReady'] == 1
+        else:
+            feature = 'get StorageConfigReady attribute from System Resource'
+            raise exceptions.FeatureNotSupported(feature=feature)

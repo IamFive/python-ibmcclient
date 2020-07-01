@@ -506,6 +506,10 @@ class IBMCStorageClient(BaseApiClient):
         :return:
         """
         LOG.info("Start delete all RAID configuration.")
+
+        # waiting until storage ready
+        self.waiting_storage_ready()
+
         storage_collection = self.list()
         for storage in storage_collection:
             if not storage.support_oob:
@@ -571,6 +575,10 @@ class IBMCStorageClient(BaseApiClient):
         """
         LOG.info('Start apply RAID configuration:: %(logical_disks)s',
                  {'logical_disks': logical_disks})
+
+        # waiting until storage ready
+        self.waiting_storage_ready()
+
         # load all controllers
         controllers = self.list()
 
@@ -698,6 +706,22 @@ class IBMCStorageClient(BaseApiClient):
                 self.ibmc_client.system.volume.create(
                     **pending_volume.to_create_volume_payload())
                 time.sleep(constants.RAID_TASK_EFFECT_SECONDS)
+
+    def waiting_storage_ready(self):
+        # waiting util storage ready
+        LOG.info('Waiting until storage ready.')
+        while True:
+            system = self.ibmc_client.system.get()
+            try:
+                if system.is_storage_ready:
+                    LOG.info('Storage is ready.')
+                    break
+                LOG.info('Storage is not ready. waiting...')
+            except exceptions.FeatureNotSupported:
+                LOG.info('Query `IsStorageReady` feature is not supported, '
+                         'will treat it as ready now.')
+                break
+            time.sleep(30)
 
     @staticmethod
     def validate_pending_volumes(groups):

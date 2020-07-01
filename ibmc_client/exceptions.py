@@ -217,6 +217,11 @@ class ControllerNotSupportOOB(IBMCClientError):
                'RAID controller which support OOB management.')
 
 
+class FeatureNotSupported(IBMCClientError):
+    message = ('Feature is not supported by this iBMC server: %(feature)s, '
+               'please check the version of this iBMC server.')
+
+
 def raise_for_response(method, url, response):
     """Raise a correct error class, if needed."""
     if response.status_code < http_client.BAD_REQUEST:

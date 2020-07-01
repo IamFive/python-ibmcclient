@@ -5,7 +5,7 @@ import unittest
 import responses
 
 import ibmc_client
-from ibmc_client import constants
+from ibmc_client import constants, exceptions
 from ibmc_client.constants import GET, PATCH, POST
 from tests.unittests import BaseUnittest
 
@@ -171,6 +171,57 @@ class TestSystem(BaseUnittest):
             }
             self.assertEqual(json.loads(self.get_request_body(req)),
                              {'Boot': boot})
+
+    @responses.activate
+    def testIsStorageReadyNotSupported(self):
+        self.start_mocked_http_server([
+            responses.Response(
+                method=GET,
+                url='https://server1.ibmc.com/redfish/v1/Systems/1',
+                json=self.load_json_file('system-v5.json')
+            )
+        ])
+
+        with self.assertRaises(exceptions.FeatureNotSupported) as c:
+            with ibmc_client.connect(**self.server) as client:
+                system = client.system.get()
+                system.is_storage_ready
+
+        self.assertIn('Feature is not supported by this iBMC server: get'
+                      ' StorageConfigReady attribute from System Resource, '
+                      'please check the version of this iBMC server.',
+                      c.exception.message)
+
+    @responses.activate
+    def testIsStorageReadyReturnTrue(self):
+        self.start_mocked_http_server([
+            responses.Response(
+                method=GET,
+                url='https://server1.ibmc.com/redfish/v1/Systems/1',
+                json=self.load_json_file('get-system-with-storage-ready.json')
+            )
+        ])
+
+        with ibmc_client.connect(**self.server) as client:
+            system = client.system.get()
+            ready = system.is_storage_ready
+            self.assertTrue(ready)
+
+    @responses.activate
+    def testIsStorageReadyReturnFalse(self):
+        self.start_mocked_http_server([
+            responses.Response(
+                method=GET,
+                url='https://server1.ibmc.com/redfish/v1/Systems/1',
+                json=self.load_json_file(
+                    'get-system-with-storage-not-ready.json')
+            )
+        ])
+
+        with ibmc_client.connect(**self.server) as client:
+            system = client.system.get()
+            ready = system.is_storage_ready
+            self.assertFalse(ready)
 
 
 if __name__ == '__main__':
