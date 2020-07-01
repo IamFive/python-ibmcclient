@@ -7,7 +7,7 @@ from os import path
 
 from setuptools import setup, find_packages
 
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -21,7 +21,7 @@ setup(
     version=__version__,
     description='HUAWEI iBMC client',
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     url='https://github.com/IamFive/python-ibmcclient',
     author='QianBiao NG',
     author_email='iampurse@vip.qq.com',

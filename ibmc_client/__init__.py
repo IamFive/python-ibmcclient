@@ -23,7 +23,7 @@ from ibmc_client.resources import CollectionResource, BaseResource
 from .api.system import IbmcSystemClient
 from .connector import Connector
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 LOG = logging.getLogger(__name__)
 
