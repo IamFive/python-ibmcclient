@@ -31,8 +31,6 @@ class IBMCBiosClient(BaseApiClient):
         super(IBMCBiosClient, self).__init__(connector, ibmc_client)
 
     def get(self):
-        # TODO (qianbiao.ng) should we detect resource odata id from root?
-        # keep it hardcode here for now.
         uri = '%s/Bios' % self.connector.system_base_url
         resp = self.connector.request(GET, uri)
         return Bios(resp, ibmc_client=self.ibmc_client)

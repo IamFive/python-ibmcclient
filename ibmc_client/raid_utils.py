@@ -29,16 +29,16 @@ JBOD = 'JBOD'
 """No RAID, JBOD mode"""
 
 RAID0 = 'RAID0'
-"""RAID Level 0, at least 2 drives is required."""
+"""RAID Level 0, at least 1 drives is required."""
 
 RAID1 = 'RAID1'
-"""RAID Level 1, at least 1 drives is required."""
+"""RAID Level 1, at least 2 drives is required."""
 
 RAID5 = 'RAID5'
 """RAID Level 5, at least 3 drives is required. (N-1)"""
 
 RAID6 = 'RAID6'
-"""RAID Level 6, (N-2)"""
+"""RAID Level 6, at least 3 drives is required. (N-2)"""
 
 RAID10 = 'RAID10'
 """RAID Level 10, alias to RAID 0+1, at least 4 drives is required."""
@@ -96,21 +96,6 @@ class PhysicalDisk(object):
 
         self.exclusive = False
 
-    # def left_capacity_bytes(self):
-    #     return self.capacity_bytes - sum(self.pending_capacity_bytes)
-
-    # @property
-    # def is_shareable(self):
-    #     """whether this disk is shareable.
-    #     - not exclusive by any other unshareable pending volume
-    #     - firmware state is unconfig good
-    #     - left capacity bytes is great than 0.
-    #
-    #     :return:
-    #     """
-    #     return (not self.exclusive and self.drive.is_unconfig_good() and
-    #             self.left_capacity_bytes > 0)
-
     @property
     def is_excludable(self):
         """whether this disk is excludable.
@@ -120,12 +105,7 @@ class PhysicalDisk(object):
 
         :return: true if yes else false
         """
-        # return (not self.exclusive and self.drive.is_unconfig_good()
-        #         and len(self.pending_capacity_bytes) == 0)
         return not self.exclusive and self.drive.is_unconfig_good()
-
-    # def add_pending_capacity_bytes(self, capacity_bytes):
-    #     self.pending_capacity_bytes.append(capacity_bytes)
 
     def mark_as_exclusive(self):
         self.exclusive = True
@@ -154,7 +134,6 @@ class PhysicalDiskGroup(object):
 
     def __init__(self, drives, raid_setting, span_number):
         # type: (list[DRIVE.Drive], Raid, int) -> None
-        # TODO update used size
         self.drives = sorted(drives, key=lambda drive: drive.capacity_bytes)
         self.raid_setting = raid_setting
         self.span_number = span_number

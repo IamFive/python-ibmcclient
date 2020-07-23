@@ -166,13 +166,6 @@ class LogicalDisk(object):
 
         # non-share and use specified disks (2 cases, both size int and max)
         if not self.share_physical_disks and self.use_specified_disks:
-            # for disk_hint in self._physical_disks:
-            #     disk = self.get_specified_disk(excludable_disks, disk_hint)
-            #     disk.mark_as_exclusive()
-            #     self.drives.append(disk.drive_id)
-            # # TODO(qianbiao.ng) is disk validation required?
-            # self.guess_span_number()
-
             specified_disks = []
             for hint in self._physical_disks:
                 disk = self.get_specified_disk(physical_disks, hint)
@@ -318,8 +311,8 @@ class LogicalDisk(object):
         disk_group = None
         share_disk_group = False
         for dg in physical_disk_groups:
-            # TODO (qianbiao.ng) whether all disks should be present or a
-            #  subset disks is ok too?
+            # FIXME(qianbiao.ng) whether all disks should be present or a
+            #  subset disks is ok too? Currently, a subset is allowed.
             share_disk_group = all(disk.drive.id in dg.drive_id_list
                                    for disk in specified_physical_disks)
             if share_disk_group:

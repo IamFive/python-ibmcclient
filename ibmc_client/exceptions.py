@@ -101,7 +101,7 @@ class IBMCHttpRequestError(IBMCClientError):
             error = 'unknown error'
         else:
             self.body = body.get('error', {})
-            # TODO (qianbiao.ng): handle partial failure situation
+            # FIXME(qianbiao.ng): handle partial failure situation
             self.extended_info_list = self.body.get('@Message.ExtendedInfo',
                                                     [])
             if len(self.extended_info_list) > 0:

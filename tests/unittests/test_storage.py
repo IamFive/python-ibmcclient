@@ -744,7 +744,6 @@ class TestStorageClient(BaseUnittest):
                     client.system.storage.delete_all_raid_configuration()
 
                     for ctrl in controllers:
-                        # TODO (qianbiao.ng) need to restore storage?
                         # ctrl.restore.assert_called_once_with()
                         ctrl.delete_volume_collection.assert_called_once_with()
                         for drive in ctrl.drives():

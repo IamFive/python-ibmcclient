@@ -82,7 +82,6 @@ class Storage(BaseResource):
     def support_oob(self):
         """get whether storage controller support OOB
 
-        TODO(turnbig) compatibility between iBMC versions
         :return: true if support else false
         """
         return self._oem.get('OOBSupport', False)
